@@ -11,8 +11,9 @@ import {
 const recordsCol = collection(db, "records");
 const contactsCol = collection(db, "contacts");
 
+let editRecordId = null;
+let editContactId = null;
 let tempDocs = [];
-let editRecordId = null;   // 🔴 THIS WAS MISSING
 
 /* ---------------- RECORDS ---------------- */
 async function loadRecords() {
@@ -20,7 +21,7 @@ async function loadRecords() {
   const snap = await getDocs(recordsCol);
   const rows = [];
   snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
-  rows.sort((a, b) => b.soNum - a.soNum);
+  rows.sort((a,b)=>b.soNum-a.soNum);
 
   rows.forEach(r => {
     recordTable.innerHTML += `
@@ -33,24 +34,23 @@ async function loadRecords() {
         <td>${r.end || "-"}</td>
         <td>${r.days}</td>
         <td>
-          <button onclick="editRecord('${r.id}')">✏️</button>
+          <button onclick="editRec('${r.id}')">✏️</button>
           <button onclick="shareWA('${r.id}')">🟢</button>
-          <button onclick="deleteRecord('${r.id}')">❌</button>
+          <button onclick="delRec('${r.id}')">❌</button>
         </td>
       </tr>`;
   });
 }
 
-/* ADD / UPDATE RECORD */
 recordForm.onsubmit = async e => {
   e.preventDefault();
 
-  const [dn, dp] = driverSelect.value.split("|");
-  const [hn, hp] = helperSelect.value.split("|");
+  const [dn,dp] = driverSelect.value.split("|");
+  const [hn,hp] = helperSelect.value.split("|");
 
-  const data = {
+  const rec = {
     so: soNumber.value,
-    soNum: +soNumber.value.replace(/\D/g, ""),
+    soNum: +soNumber.value.replace(/\D/g,""),
     lorry: lorryNumber.value,
     driver: dn,
     dPhone: dp,
@@ -59,40 +59,34 @@ recordForm.onsubmit = async e => {
     start: startDate.value,
     end: endDate.value || "",
     days: endDate.value
-      ? Math.ceil(
-          (new Date(endDate.value) - new Date(startDate.value)) / 86400000
-        ) + 1
+      ? Math.ceil((new Date(endDate.value)-new Date(startDate.value))/86400000)+1
       : "In Progress",
-    docs: tempDocs
+    docs: [...tempDocs]
   };
 
-  if (editRecordId) {
-    // 🔁 UPDATE
-    await updateDoc(doc(db, "records", editRecordId), data);
+  if (editRecordId === null) {
+    await addDoc(recordsCol, rec);
   } else {
-    // ➕ ADD
-    await addDoc(recordsCol, data);
+    await updateDoc(doc(db, "records", editRecordId), rec);
   }
 
   closeRecord();
   loadRecords();
 };
 
-/* EDIT RECORD */
-window.editRecord = async id => {
+window.editRec = async id => {
   editRecordId = id;
+  recordTitle.innerText = "Edit Loading Record";
 
   const snap = await getDocs(recordsCol);
   snap.forEach(d => {
     if (d.id === id) {
       const r = d.data();
-
       soNumber.value = r.so;
       lorryNumber.value = r.lorry;
       startDate.value = r.start;
       endDate.value = r.end || "";
-
-      tempDocs = r.docs || [];
+      tempDocs = [...(r.docs || [])];
       renderDocs();
     }
   });
@@ -100,34 +94,32 @@ window.editRecord = async id => {
   recordModal.style.display = "block";
 };
 
-/* DELETE RECORD */
-window.deleteRecord = async id => {
+window.delRec = async id => {
   if (!confirm("Delete this record?")) return;
   await deleteDoc(doc(db, "records", id));
   loadRecords();
 };
 
 /* ---------------- CONTACTS ---------------- */
-async function loadContacts() {
-  driverSelect.innerHTML = "";
-  helperSelect.innerHTML = "";
-  contactTable.innerHTML = "";
+async function loadContacts(){
+  driverSelect.innerHTML="";
+  helperSelect.innerHTML="";
+  contactTable.innerHTML="";
 
   const snap = await getDocs(contactsCol);
-  snap.forEach(d => {
+  snap.forEach(d=>{
     const c = d.data();
     const opt = `${c.name}|${c.phone}`;
 
-    if (c.type === "driver")
-      driverSelect.innerHTML += `<option>${opt}</option>`;
-    if (c.type === "helper")
-      helperSelect.innerHTML += `<option>${opt}</option>`;
+    if(c.type==="driver") driverSelect.innerHTML+=`<option>${opt}</option>`;
+    if(c.type==="helper") helperSelect.innerHTML+=`<option>${opt}</option>`;
 
-    contactTable.innerHTML += `
+    contactTable.innerHTML+=`
       <tr>
         <td>${c.name}</td>
         <td>${c.phone}</td>
         <td>
+          <button onclick="editContact('${d.id}','${c.name}','${c.phone}','${c.type}')">✏️</button>
           <button onclick="deleteContact('${d.id}')">❌</button>
         </td>
       </tr>`;
@@ -135,79 +127,88 @@ async function loadContacts() {
 }
 
 window.saveContact = async () => {
-  if (!contactName.value || !contactPhone.value) return;
+  if(!contactName.value||!contactPhone.value) return;
 
-  await addDoc(contactsCol, {
+  const data = {
     type: contactType.value,
     name: contactName.value,
     phone: contactPhone.value
-  });
+  };
 
+  if(editContactId === null){
+    await addDoc(contactsCol, data);
+  } else {
+    await updateDoc(doc(db,"contacts",editContactId), data);
+  }
+
+  editContactId = null;
   contactName.value = contactPhone.value = "";
   loadContacts();
 };
 
-window.deleteContact = async id => {
-  await deleteDoc(doc(db, "contacts", id));
+window.editContact = (id,name,phone,type)=>{
+  editContactId = id;
+  contactName.value = name;
+  contactPhone.value = phone;
+  contactType.value = type;
+};
+
+window.deleteContact = async id=>{
+  await deleteDoc(doc(db,"contacts",id));
   loadContacts();
 };
 
 /* ---------------- DOCS ---------------- */
-docInput.onchange = () => {
-  [...docInput.files].forEach(f => tempDocs.push(f.name));
+docInput.onchange = ()=>{
+  [...docInput.files].forEach(f=>tempDocs.push(f.name));
   renderDocs();
 };
 
-function renderDocs() {
+function renderDocs(){
   docList.innerHTML = tempDocs
-    .map(
-      (d, i) => `<li>${d}<button onclick="removeDoc(${i})">❌</button></li>`
-    )
+    .map((d,i)=>`<li>${d}<button onclick="removeDoc(${i})">❌</button></li>`)
     .join("");
 }
 
-window.removeDoc = i => {
-  tempDocs.splice(i, 1);
+window.removeDoc = i=>{
+  tempDocs.splice(i,1);
   renderDocs();
 };
 
 /* ---------------- WHATSAPP ---------------- */
-window.shareWA = async id => {
+window.shareWA = async id=>{
   const snap = await getDocs(recordsCol);
-  snap.forEach(d => {
-    if (d.id === id) {
-      const r = d.data();
-      const msg = `"${r.start}" Loaded
+  snap.forEach(d=>{
+    if(d.id===id){
+      const r=d.data();
+      const msg=`"${r.start}" Loaded
 Order Number - ${r.so}
 Lorry Number - ${r.lorry}
 Driver - ${r.driver} - ${r.dPhone}
 Poter - ${r.helper} - ${r.hPhone}`;
-      window.open("https://wa.me/?text=" + encodeURIComponent(msg));
+      window.open("https://wa.me/?text="+encodeURIComponent(msg));
     }
   });
 };
 
 /* ---------------- UI ---------------- */
-window.closeRecord = () => {
-  recordModal.style.display = "none";
-  editRecordId = null;      // 🔴 RESET EDIT STATE
-};
-
-window.closeContacts = () => {
-  contactModal.style.display = "none";
-};
-
-openFormBtn.onclick = () => {
-  editRecordId = null;
-  tempDocs = [];
-  docList.innerHTML = "";
+window.closeRecord = ()=>{
+  recordModal.style.display="none";
   recordForm.reset();
-  recordModal.style.display = "block";
+  tempDocs=[];
+  editRecordId=null;
+  recordTitle.innerText="Add Loading Record";
+  renderDocs();
 };
 
-manageContactsBtn.onclick = () => {
-  contactModal.style.display = "block";
+window.closeContacts = ()=>contactModal.style.display="none";
+
+openFormBtn.onclick = ()=>{
+  closeRecord();
+  recordModal.style.display="block";
 };
+
+manageContactsBtn.onclick = ()=>contactModal.style.display="block";
 
 /* INIT */
 loadContacts();
