@@ -1,4 +1,7 @@
-* { box-sizing: border-box; font-family: Segoe UI, sans-serif; }
+* {
+  box-sizing: border-box;
+  font-family: Segoe UI, sans-serif;
+}
 
 body {
   background: #f2f4f7;
@@ -18,7 +21,7 @@ button {
 
 table {
   width: 100%;
-  background: white;
+  background: #fff;
   border-collapse: collapse;
 }
 
