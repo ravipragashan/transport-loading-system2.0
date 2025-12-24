@@ -1,16 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>Untitled</title>
-    <link rel="stylesheet" href="./style.css">
-
-  </head>
-    
-  <body>
-  <!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Transport Loading System</title>
@@ -20,7 +9,7 @@
 
 <header class="page-header">
   <h2>Loading & Transport Records</h2>
-  <div class="header-actions">
+  <div>
     <button id="manageContactsBtn">Manage Contacts</button>
     <button id="openFormBtn">Add Record</button>
   </div>
@@ -42,12 +31,12 @@
   <tbody id="recordTable"></tbody>
 </table>
 
-<!-- ================= RECORD MODAL ================= -->
+<!-- RECORD MODAL -->
 <div class="modal" id="recordModal">
   <div class="modal-box">
     <div class="modal-header">
-      <h3>Loading Record</h3>
-      <button class="close-btn" onclick="closeRecord()">✖</button>
+      <h3 id="recordTitle">Add Loading Record</h3>
+      <button onclick="closeRecord()">✖</button>
     </div>
 
     <form id="recordForm" class="modal-body scroll">
@@ -69,7 +58,7 @@
       <label>End Date (optional)</label>
       <input type="date" id="endDate">
 
-      <label>Documents (PDF / Excel)</label>
+      <label>Documents (names only)</label>
       <input type="file" id="docInput" multiple>
       <ul id="docList"></ul>
     </form>
@@ -81,16 +70,16 @@
   </div>
 </div>
 
-<!-- ================= CONTACT MODAL ================= -->
+<!-- CONTACT MODAL -->
 <div class="modal" id="contactModal">
   <div class="modal-box">
     <div class="modal-header">
       <h3>Manage Contacts</h3>
-      <button class="close-btn" onclick="closeContacts()">✖</button>
+      <button onclick="closeContacts()">✖</button>
     </div>
 
     <div class="modal-body scroll">
-      <label>Contact Type</label>
+      <label>Type</label>
       <select id="contactType">
         <option value="driver">Driver</option>
         <option value="helper">Helper</option>
@@ -102,7 +91,7 @@
       <label>Phone</label>
       <input id="contactPhone">
 
-      <button onclick="saveContact()">Save Contact</button>
+      <button onclick="saveContact()">Save / Update</button>
 
       <hr>
 
@@ -123,9 +112,4 @@
 <script type="module" src="firebase.js"></script>
 <script type="module" src="script.js"></script>
 </body>
-</html>
-    <script type="module" src="./script.js"></script>
-
-  </body>
-  
 </html>
