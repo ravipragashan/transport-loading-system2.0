@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Transport Loading System</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="page-header">
-  <h2>Loading & Transport Records</h2>
+<header>
+  <h2>Loading Records</h2>
   <div>
     <button id="manageContactsBtn">Manage Contacts</button>
+    <button id="manageLorriesBtn">Manage Lorries</button>
     <button id="openFormBtn">Add Record</button>
   </div>
 </header>
@@ -35,16 +35,16 @@
 <div class="modal" id="recordModal">
   <div class="modal-box">
     <div class="modal-header">
-      <h3 id="recordTitle">Add Loading Record</h3>
+      <h3>Loading Record</h3>
       <button onclick="closeRecord()">✖</button>
     </div>
 
     <form id="recordForm" class="modal-body scroll">
-      <label>Sales Order No</label>
+      <label>SO Number</label>
       <input id="soNumber" required>
 
-      <label>Lorry Number</label>
-      <input id="lorryNumber" required>
+      <label>Lorry</label>
+      <select id="lorrySelect" required></select>
 
       <label>Driver</label>
       <select id="driverSelect" required></select>
@@ -55,10 +55,10 @@
       <label>Start Date</label>
       <input type="date" id="startDate" required>
 
-      <label>End Date (optional)</label>
+      <label>End Date</label>
       <input type="date" id="endDate">
 
-      <label>Documents (names only)</label>
+      <label>Documents</label>
       <input type="file" id="docInput" multiple>
       <ul id="docList"></ul>
     </form>
@@ -74,42 +74,50 @@
 <div class="modal" id="contactModal">
   <div class="modal-box">
     <div class="modal-header">
-      <h3>Manage Contacts</h3>
+      <h3>Contacts</h3>
       <button onclick="closeContacts()">✖</button>
     </div>
 
     <div class="modal-body scroll">
-      <label>Type</label>
       <select id="contactType">
         <option value="driver">Driver</option>
         <option value="helper">Helper</option>
       </select>
 
-      <label>Name</label>
-      <input id="contactName">
+      <input id="contactName" placeholder="Name">
+      <input id="contactPhone" placeholder="Phone">
 
-      <label>Phone</label>
-      <input id="contactPhone">
+      <select id="contactProvince"></select>
 
       <button onclick="saveContact()">Save / Update</button>
 
-      <hr>
-
       <table>
-        <thead>
-          <tr><th>Name</th><th>Phone</th><th>Action</th></tr>
-        </thead>
         <tbody id="contactTable"></tbody>
       </table>
-    </div>
-
-    <div class="modal-footer">
-      <button onclick="closeContacts()">Close</button>
     </div>
   </div>
 </div>
 
-<script type="module" src="firebase.js"></script>
+<!-- LORRY MODAL -->
+<div class="modal" id="lorryModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Lorries</h3>
+      <button onclick="closeLorries()">✖</button>
+    </div>
+
+    <div class="modal-body scroll">
+      <input id="lorryNumber" placeholder="Lorry Number">
+      <select id="lorryProvince"></select>
+      <button onclick="saveLorry()">Save / Update</button>
+
+      <table>
+        <tbody id="lorryTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script type="module" src="script.js"></script>
 </body>
 </html>
