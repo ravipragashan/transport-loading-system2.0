@@ -1,14 +1,10 @@
-* {
-  box-sizing: border-box;
-  font-family: Segoe UI, sans-serif;
-}
-
 body {
-  background: #f2f4f7;
+  font-family: Arial;
+  background: #f2f2f2;
   padding: 20px;
 }
 
-.page-header {
+header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
@@ -21,7 +17,7 @@ button {
 
 table {
   width: 100%;
-  background: #fff;
+  background: white;
   border-collapse: collapse;
 }
 
@@ -32,39 +28,31 @@ th, td {
 }
 
 th {
-  background: #0b8f1d;
+  background: #007a2f;
   color: white;
 }
 
-/* MODAL */
 .modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.45);
+  background: rgba(0,0,0,.5);
 }
 
 .modal-box {
-  background: #fff;
-  width: 480px;
+  background: white;
+  width: 450px;
   max-height: 85vh;
   margin: 40px auto;
   display: flex;
   flex-direction: column;
-  border-radius: 6px;
 }
 
-.modal-header,
-.modal-footer {
+.modal-header, .modal-footer {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  background: #eee;
   display: flex;
   justify-content: space-between;
-}
-
-.modal-footer {
-  border-top: 1px solid #ddd;
-  border-bottom: none;
 }
 
 .modal-body {
@@ -75,17 +63,8 @@ th {
   overflow-y: auto;
 }
 
-label {
-  display: block;
-  margin-top: 8px;
-}
-
 input, select {
   width: 100%;
   padding: 6px;
-}
-
-#docList li {
-  display: flex;
-  justify-content: space-between;
+  margin-top: 6px;
 }
