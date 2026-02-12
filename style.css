@@ -1,16 +1,20 @@
 body {
   font-family: Arial;
   background: #f4f6f9;
-  padding: 20px;
   margin: 0;
+  padding: 20px;
 }
 
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
   flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.header-buttons button {
+  margin-left: 8px;
 }
 
 button {
@@ -32,9 +36,9 @@ button:hover {
 
 table {
   width: 100%;
-  background: white;
   border-collapse: collapse;
-  min-width: 800px;
+  background: white;
+  min-width: 750px;
 }
 
 th, td {
@@ -60,9 +64,9 @@ th {
   width: 450px;
   max-height: 90vh;
   margin: 40px auto;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  border-radius: 8px;
 }
 
 .modal-header,
@@ -81,13 +85,32 @@ th {
 input, select {
   width: 100%;
   padding: 6px;
-  margin-top: 6px;
+  margin-top: 5px;
   margin-bottom: 10px;
 }
 
 /* MOBILE */
 @media (max-width: 768px) {
-  body { padding: 10px; }
-  .modal-box { width: 95%; }
-  table { min-width: 600px; }
+
+  body {
+    padding: 10px;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-buttons {
+    margin-top: 10px;
+  }
+
+  .modal-box {
+    width: 95%;
+    margin: 20px auto;
+  }
+
+  table {
+    min-width: 600px;
+  }
 }
