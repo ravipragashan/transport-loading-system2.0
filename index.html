@@ -8,41 +8,62 @@
 
 <header>
   <h2>Transport Loading System</h2>
-  <div>
-    <input type="text" id="searchInput" placeholder="Search SO / Driver / Lorry">
-    <button id="openFormBtn">Add Record</button>
-  </div>
+  <button id="openFormBtn">+ Add Record</button>
 </header>
 
-<div id="loader">Loading...</div>
-
-<table>
-  <thead>
-    <tr>
-      <th>SO</th>
-      <th>Lorry</th>
-      <th>Driver</th>
-      <th>Helper</th>
-      <th>Start</th>
-      <th>End</th>
-      <th>Days</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="recordTable"></tbody>
-</table>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>SO</th>
+        <th>Lorry</th>
+        <th>Driver</th>
+        <th>Helper</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Days</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="recordTable"></tbody>
+  </table>
+</div>
 
 <!-- MODAL -->
 <div class="modal" id="recordModal">
   <div class="modal-box">
-    <h3>Loading Record</h3>
+    <h3>Create Loading Record</h3>
+
     <form id="recordForm">
-      <input id="soNumber" placeholder="SO Number" required>
-      <input id="lorry" placeholder="Lorry" required>
-      <input id="driver" placeholder="Driver" required>
-      <input id="helper" placeholder="Helper" required>
-      <input type="date" id="startDate" required>
-      <input type="date" id="endDate">
+      <div class="form-group">
+        <label>SO Number</label>
+        <input id="soNumber" required>
+      </div>
+
+      <div class="form-group">
+        <label>Lorry</label>
+        <select id="lorrySelect" required></select>
+      </div>
+
+      <div class="form-group">
+        <label>Driver</label>
+        <select id="driverSelect" required></select>
+      </div>
+
+      <div class="form-group">
+        <label>Helper</label>
+        <select id="helperSelect" required></select>
+      </div>
+
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" id="startDate" required>
+      </div>
+
+      <div class="form-group">
+        <label>End Date</label>
+        <input type="date" id="endDate">
+      </div>
 
       <div class="modal-buttons">
         <button type="button" onclick="closeModal()">Cancel</button>
