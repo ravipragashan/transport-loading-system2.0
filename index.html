@@ -7,10 +7,10 @@
 <body>
 
 <header>
-  <h2>Loading Records</h2>
+  <h2>Transport Loading System</h2>
   <div>
-    <button id="manageContactsBtn">Manage Contacts</button>
-    <button id="manageLorriesBtn">Manage Lorries</button>
+    <button id="manageContactsBtn">Contacts</button>
+    <button id="manageLorriesBtn">Lorries</button>
     <button id="openFormBtn">Add Record</button>
   </div>
 </header>
@@ -34,87 +34,23 @@
 <!-- RECORD MODAL -->
 <div class="modal" id="recordModal">
   <div class="modal-box">
-    <div class="modal-header">
-      <h3>Loading Record</h3>
-      <button onclick="closeRecord()">✖</button>
-    </div>
+    <h3>Loading Record</h3>
 
-    <form id="recordForm" class="modal-body scroll">
-      <label>SO Number</label>
-      <input id="soNumber" required>
+    <form id="recordForm">
+      <input id="soNumber" placeholder="SO Number" required>
 
-      <label>Lorry</label>
       <select id="lorrySelect" required></select>
-
-      <label>Driver</label>
       <select id="driverSelect" required></select>
-
-      <label>Helper</label>
       <select id="helperSelect" required></select>
 
-      <label>Start Date</label>
       <input type="date" id="startDate" required>
-
-      <label>End Date</label>
       <input type="date" id="endDate">
 
-      <label>Documents</label>
-      <input type="file" id="docInput" multiple>
-      <ul id="docList"></ul>
+      <div class="modal-buttons">
+        <button type="button" onclick="closeRecord()">Cancel</button>
+        <button type="submit">Save</button>
+      </div>
     </form>
-
-    <div class="modal-footer">
-      <button onclick="closeRecord()">Cancel</button>
-      <button form="recordForm">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- CONTACT MODAL -->
-<div class="modal" id="contactModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>Contacts</h3>
-      <button onclick="closeContacts()">✖</button>
-    </div>
-
-    <div class="modal-body scroll">
-      <select id="contactType">
-        <option value="driver">Driver</option>
-        <option value="helper">Helper</option>
-      </select>
-
-      <input id="contactName" placeholder="Name">
-      <input id="contactPhone" placeholder="Phone">
-
-      <select id="contactProvince"></select>
-
-      <button onclick="saveContact()">Save / Update</button>
-
-      <table>
-        <tbody id="contactTable"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- LORRY MODAL -->
-<div class="modal" id="lorryModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>Lorries</h3>
-      <button onclick="closeLorries()">✖</button>
-    </div>
-
-    <div class="modal-body scroll">
-      <input id="lorryNumber" placeholder="Lorry Number">
-      <select id="lorryProvince"></select>
-      <button onclick="saveLorry()">Save / Update</button>
-
-      <table>
-        <tbody id="lorryTable"></tbody>
-      </table>
-    </div>
   </div>
 </div>
 
