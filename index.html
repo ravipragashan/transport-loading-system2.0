@@ -2,13 +2,18 @@
 <html>
 <head>
   <title>Transport Loading System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
   <h2>Transport Loading System</h2>
-  <button id="openFormBtn">+ Add Record</button>
+  <div>
+    <button id="manageContactsBtn">Contacts</button>
+    <button id="manageLorriesBtn">Lorries</button>
+    <button id="openFormBtn">+ Add Record</button>
+  </div>
 </header>
 
 <div class="table-wrapper">
@@ -29,47 +34,83 @@
   </table>
 </div>
 
-<!-- MODAL -->
+<!-- RECORD MODAL -->
 <div class="modal" id="recordModal">
   <div class="modal-box">
-    <h3>Create Loading Record</h3>
+    <div class="modal-header">
+      <h3>Create Loading Record</h3>
+      <button onclick="closeRecord()">✖</button>
+    </div>
 
-    <form id="recordForm">
-      <div class="form-group">
-        <label>SO Number</label>
-        <input id="soNumber" required>
-      </div>
+    <form id="recordForm" class="modal-body">
+      <label>SO Number</label>
+      <input id="soNumber" type="number" required>
 
-      <div class="form-group">
-        <label>Lorry</label>
-        <select id="lorrySelect" required></select>
-      </div>
+      <label>Lorry</label>
+      <select id="lorrySelect" required></select>
 
-      <div class="form-group">
-        <label>Driver</label>
-        <select id="driverSelect" required></select>
-      </div>
+      <label>Driver</label>
+      <select id="driverSelect" required></select>
 
-      <div class="form-group">
-        <label>Helper</label>
-        <select id="helperSelect" required></select>
-      </div>
+      <label>Helper</label>
+      <select id="helperSelect" required></select>
 
-      <div class="form-group">
-        <label>Start Date</label>
-        <input type="date" id="startDate" required>
-      </div>
+      <label>Start Date</label>
+      <input type="date" id="startDate" required>
 
-      <div class="form-group">
-        <label>End Date</label>
-        <input type="date" id="endDate">
-      </div>
-
-      <div class="modal-buttons">
-        <button type="button" onclick="closeModal()">Cancel</button>
-        <button type="submit">Save</button>
-      </div>
+      <label>End Date</label>
+      <input type="date" id="endDate">
     </form>
+
+    <div class="modal-footer">
+      <button onclick="closeRecord()">Cancel</button>
+      <button form="recordForm">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal" id="contactModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Contacts</h3>
+      <button onclick="closeContacts()">✖</button>
+    </div>
+
+    <div class="modal-body">
+      <select id="contactType">
+        <option value="driver">Driver</option>
+        <option value="helper">Helper</option>
+      </select>
+
+      <input id="contactName" placeholder="Name">
+      <input id="contactPhone" placeholder="Phone">
+
+      <button onclick="saveContact()">Save</button>
+
+      <table>
+        <tbody id="contactTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- LORRY MODAL -->
+<div class="modal" id="lorryModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Lorries</h3>
+      <button onclick="closeLorries()">✖</button>
+    </div>
+
+    <div class="modal-body">
+      <input id="lorryNumber" placeholder="Lorry Number">
+      <button onclick="saveLorry()">Save</button>
+
+      <table>
+        <tbody id="lorryTable"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
