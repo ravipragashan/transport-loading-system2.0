@@ -9,7 +9,7 @@
 
 <header>
   <h2>Transport Loading System</h2>
-  <div>
+  <div class="header-buttons">
     <button id="manageContactsBtn">Contacts</button>
     <button id="manageLorriesBtn">Lorries</button>
     <button id="openFormBtn">+ Add Record</button>
@@ -65,51 +65,6 @@
     <div class="modal-footer">
       <button onclick="closeRecord()">Cancel</button>
       <button form="recordForm">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- CONTACT MODAL -->
-<div class="modal" id="contactModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>Contacts</h3>
-      <button onclick="closeContacts()">✖</button>
-    </div>
-
-    <div class="modal-body">
-      <select id="contactType">
-        <option value="driver">Driver</option>
-        <option value="helper">Helper</option>
-      </select>
-
-      <input id="contactName" placeholder="Name">
-      <input id="contactPhone" placeholder="Phone">
-
-      <button onclick="saveContact()">Save</button>
-
-      <table>
-        <tbody id="contactTable"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- LORRY MODAL -->
-<div class="modal" id="lorryModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>Lorries</h3>
-      <button onclick="closeLorries()">✖</button>
-    </div>
-
-    <div class="modal-body">
-      <input id="lorryNumber" placeholder="Lorry Number">
-      <button onclick="saveLorry()">Save</button>
-
-      <table>
-        <tbody id="lorryTable"></tbody>
-      </table>
     </div>
   </div>
 </div>
