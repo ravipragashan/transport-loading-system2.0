@@ -1,18 +1,15 @@
 body {
   font-family: Arial;
   background: #f4f6f9;
+  margin: 0;
   padding: 20px;
 }
 
 header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
-}
-
-input {
-  padding: 8px;
-  margin-right: 10px;
 }
 
 button {
@@ -24,20 +21,15 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
-#loader {
-  display: none;
-  margin-bottom: 10px;
-  font-weight: bold;
+.table-wrapper {
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
   background: white;
   border-collapse: collapse;
+  min-width: 800px;
 }
 
 th, td {
@@ -65,10 +57,37 @@ th {
   padding: 20px;
   width: 400px;
   border-radius: 8px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
 }
 
 .modal-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .modal-box {
+    width: 95%;
+  }
+
+  table {
+    min-width: 600px;
+  }
 }
