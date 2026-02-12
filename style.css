@@ -10,23 +10,34 @@ header {
   margin-bottom: 20px;
 }
 
+input {
+  padding: 8px;
+  margin-right: 10px;
+}
+
 button {
   padding: 8px 14px;
   border: none;
   background: #007a2f;
   color: white;
-  cursor: pointer;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 button:hover {
   opacity: 0.9;
 }
 
+#loader {
+  display: none;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
 table {
   width: 100%;
-  border-collapse: collapse;
   background: white;
+  border-collapse: collapse;
 }
 
 th, td {
@@ -54,12 +65,6 @@ th {
   padding: 20px;
   width: 400px;
   border-radius: 8px;
-}
-
-input, select {
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px;
 }
 
 .modal-buttons {
