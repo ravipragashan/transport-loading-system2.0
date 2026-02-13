@@ -37,35 +37,51 @@
 <!-- RECORD MODAL -->
 <div class="modal" id="recordModal">
   <div class="modal-box">
-    <div class="modal-header">
-      <h3>Create Loading Record</h3>
-      <button onclick="closeRecord()">✖</button>
-    </div>
+    <h3>Create Record</h3>
+    <form id="recordForm">
+      <input id="soNumber" type="number" placeholder="SO Number" required>
 
-    <form id="recordForm" class="modal-body">
-      <label>SO Number</label>
-      <input id="soNumber" type="number" required>
-
-      <label>Lorry</label>
       <select id="lorrySelect" required></select>
-
-      <label>Driver</label>
       <select id="driverSelect" required></select>
-
-      <label>Helper</label>
       <select id="helperSelect" required></select>
 
-      <label>Start Date</label>
       <input type="date" id="startDate" required>
-
-      <label>End Date</label>
       <input type="date" id="endDate">
-    </form>
 
-    <div class="modal-footer">
-      <button onclick="closeRecord()">Cancel</button>
-      <button form="recordForm">Save</button>
-    </div>
+      <div class="modal-buttons">
+        <button type="button" onclick="closeRecord()">Cancel</button>
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal" id="contactModal">
+  <div class="modal-box">
+    <h3>Add Contact</h3>
+    <select id="contactType">
+      <option value="driver">Driver</option>
+      <option value="helper">Helper</option>
+    </select>
+    <input id="contactName" placeholder="Name">
+    <input id="contactPhone" placeholder="Phone">
+    <button onclick="saveContact()">Save</button>
+    <table>
+      <tbody id="contactTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- LORRY MODAL -->
+<div class="modal" id="lorryModal">
+  <div class="modal-box">
+    <h3>Add Lorry</h3>
+    <input id="lorryNumber" placeholder="Lorry Number">
+    <button onclick="saveLorry()">Save</button>
+    <table>
+      <tbody id="lorryTable"></tbody>
+    </table>
   </div>
 </div>
 
