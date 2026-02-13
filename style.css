@@ -44,15 +44,18 @@ th { background: #007a2f; color: white; }
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.5);
+  background: rgba(0,0,0,.6);
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-box {
   background: white;
   width: 400px;
-  margin: 40px auto;
-  padding: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
   border-radius: 8px;
+  padding: 20px;
 }
 
 input, select {
@@ -66,8 +69,30 @@ input, select {
   justify-content: space-between;
 }
 
-/* MOBILE */
-@media (max-width:768px) {
-  body { padding: 10px; }
-  .modal-box { width: 95%; }
+/* MOBILE CARD VIEW */
+@media (max-width:600px){
+
+  table, thead, tbody, th, td, tr{
+    display:block;
+  }
+
+  thead{ display:none; }
+
+  tr{
+    margin-bottom:15px;
+    background:white;
+    padding:10px;
+    border-radius:6px;
+  }
+
+  td{
+    border:none;
+    text-align:left;
+    padding:4px 0;
+  }
+
+  td::before{
+    font-weight:bold;
+    display:block;
+  }
 }
