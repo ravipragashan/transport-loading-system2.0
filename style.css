@@ -5,6 +5,7 @@ body {
   background: #f4f6f9;
 }
 
+/* HEADER */
 header {
   display: flex;
   justify-content: space-between;
@@ -13,19 +14,27 @@ header {
   margin-bottom: 20px;
 }
 
+.header-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 button {
-  padding: 6px 12px;
+  padding: 8px 14px;
   background: #007a2f;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 button:hover {
   opacity: 0.9;
 }
 
+/* TABLE DESKTOP */
 .table-wrapper {
   overflow-x: auto;
 }
@@ -34,12 +43,11 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  min-width: 700px;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 10px;
   text-align: center;
 }
 
@@ -56,6 +64,7 @@ th {
   background: rgba(0,0,0,.6);
   justify-content: center;
   align-items: center;
+  padding: 10px;
 }
 
 .modal-box {
@@ -63,16 +72,17 @@ th {
   width: 420px;
   max-height: 90vh;
   overflow-y: auto;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 20px;
 }
 
 input, select {
   width: 100%;
-  padding: 6px;
-  margin-bottom: 10px;
-  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 12px;
+  border-radius: 6px;
   border: 1px solid #ccc;
+  font-size: 14px;
 }
 
 .modal-buttons {
@@ -80,11 +90,14 @@ input, select {
   justify-content: space-between;
 }
 
-/* MOBILE CARD VIEW */
-@media (max-width: 600px) {
+/* ========================= */
+/* 🔥 MOBILE CARD VERSION 🔥 */
+/* ========================= */
+
+@media (max-width: 768px) {
 
   body {
-    padding: 10px;
+    padding: 12px;
   }
 
   table, thead, tbody, th, td, tr {
@@ -98,14 +111,33 @@ input, select {
   tr {
     background: white;
     margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 6px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
   }
 
   td {
     border: none;
     text-align: left;
-    padding: 4px 0;
+    padding: 6px 0;
+    font-size: 14px;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #007a2f;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .modal-box {
+    width: 100%;
   }
 
 }
