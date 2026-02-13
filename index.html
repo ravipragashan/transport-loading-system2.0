@@ -40,14 +40,11 @@
     <h3>Create Record</h3>
     <form id="recordForm">
       <input id="soNumber" type="number" placeholder="SO Number" required>
-
       <select id="lorrySelect" required></select>
       <select id="driverSelect" required></select>
       <select id="helperSelect" required></select>
-
       <input type="date" id="startDate" required>
       <input type="date" id="endDate">
-
       <div class="modal-buttons">
         <button type="button" onclick="closeRecord()">Cancel</button>
         <button type="submit">Save</button>
@@ -59,7 +56,7 @@
 <!-- CONTACT MODAL -->
 <div class="modal" id="contactModal">
   <div class="modal-box">
-    <h3>Add Contact</h3>
+    <h3>Manage Contacts</h3>
     <select id="contactType">
       <option value="driver">Driver</option>
       <option value="helper">Helper</option>
@@ -76,7 +73,7 @@
 <!-- LORRY MODAL -->
 <div class="modal" id="lorryModal">
   <div class="modal-box">
-    <h3>Add Lorry</h3>
+    <h3>Manage Lorries</h3>
     <input id="lorryNumber" placeholder="Lorry Number">
     <button onclick="saveLorry()">Save</button>
     <table>
@@ -85,6 +82,4 @@
   </div>
 </div>
 
-<script type="module" src="script.js"></script>
-</body>
-</html>
+<script type="module" src="scri
