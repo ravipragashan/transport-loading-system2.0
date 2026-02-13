@@ -2,211 +2,95 @@ import { db } from "./firebase.js";
 import {
   collection,
   addDoc,
-  deleteDoc,
-  doc,
-  getDoc,
-  updateDoc,
   onSnapshot,
-  query,
-  orderBy
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* DOM */
-const recordTable=document.getElementById("recordTable");
-const recordForm=document.getElementById("recordForm");
+const recordTable = document.getElementById("recordTable");
+const driverSelect = document.getElementById("driverSelect");
+const helperSelect = document.getElementById("helperSelect");
+const lorrySelect = document.getElementById("lorrySelect");
 
-const driverSelect=document.getElementById("driverSelect");
-const helperSelect=document.getElementById("helperSelect");
-const lorrySelect=document.getElementById("lorrySelect");
+const openFormBtn = document.getElementById("openFormBtn");
 
-const contactTable=document.getElementById("contactTable");
-const lorryTable=document.getElementById("lorryTable");
+/* Collections */
+const recordsCol = collection(db,"records");
+const contactsCol = collection(db,"contacts");
+const lorriesCol = collection(db,"lorries");
 
-const soNumber=document.getElementById("soNumber");
-const startDate=document.getElementById("startDate");
-const endDate=document.getElementById("endDate");
-
-const contactType=document.getElementById("contactType");
-const contactName=document.getElementById("contactName");
-const contactPhone=document.getElementById("contactPhone");
-
-const lorryNumber=document.getElementById("lorryNumber");
-
-const recordModal=document.getElementById("recordModal");
-const contactModal=document.getElementById("contactModal");
-const lorryModal=document.getElementById("lorryModal");
-
-const openFormBtn=document.getElementById("openFormBtn");
-const manageContactsBtn=document.getElementById("manageContactsBtn");
-const manageLorriesBtn=document.getElementById("manageLorriesBtn");
-
-const recordsCol=collection(db,"records");
-const contactsCol=collection(db,"contacts");
-const lorriesCol=collection(db,"lorries");
-
-let editContactId=null;
-
-/* CONTACTS */
-onSnapshot(contactsCol,snap=>{
-  driverSelect.innerHTML="";
-  helperSelect.innerHTML="";
-  contactTable.innerHTML="";
-
-  snap.forEach(d=>{
-    const c=d.data();
-
-    if(c.type==="driver")
-      driverSelect.innerHTML+=`<option value="${d.id}">${c.name}</option>`;
-
-    if(c.type==="helper")
-      helperSelect.innerHTML+=`<option value="${d.id}">${c.name}</option>`;
-
-    contactTable.innerHTML+=`
-    <tr>
-      <td>${c.name}</td>
-      <td>${c.phone}</td>
-      <td>${c.type}</td>
-      <td>
-        <button onclick="editContact('${d.id}','${c.name}','${c.phone}','${c.type}')">✏</button>
-        <button onclick="deleteContact('${d.id}')">❌</button>
-      </td>
-    </tr>`;
-  });
-});
-
-window.editContact=(id,name,phone,type)=>{
-  editContactId=id;
-  contactName.value=name;
-  contactPhone.value=phone;
-  contactType.value=type;
+/* TEST BUTTON */
+openFormBtn.onclick = () => {
+  alert("Button working");
 };
 
-window.saveContact=async()=>{
-  const data={
-    type:contactType.value,
-    name:contactName.value,
-    phone:contactPhone.value
-  };
+/* LOAD CONTACTS */
+onSnapshot(contactsCol, snap => {
 
-  if(editContactId){
-    await updateDoc(doc(db,"contacts",editContactId),data);
-    editContactId=null;
-  }else{
-    await addDoc(contactsCol,data);
+  driverSelect.innerHTML = "";
+  helperSelect.innerHTML = "";
+
+  snap.forEach(d => {
+    const c = d.data();
+
+    if (c.type === "driver")
+      driverSelect.innerHTML += `<option value="${d.id}">${c.name}</option>`;
+
+    if (c.type === "helper")
+      helperSelect.innerHTML += `<option value="${d.id}">${c.name}</option>`;
+  });
+
+});
+
+/* LOAD LORRIES */
+onSnapshot(lorriesCol, snap => {
+
+  lorrySelect.innerHTML = "";
+
+  snap.forEach(d => {
+    const l = d.data();
+    lorrySelect.innerHTML += `<option value="${d.id}">${l.number}</option>`;
+  });
+
+});
+
+/* LOAD RECORDS */
+onSnapshot(recordsCol, async snap => {
+
+  recordTable.innerHTML = "";
+
+  for (const d of snap.docs) {
+
+    const r = d.data();
+
+    let driverName = "-";
+    let helperName = "-";
+    let lorryNumber = "-";
+
+    if (r.driverId) {
+      const driverDoc = await getDoc(doc(db,"contacts",r.driverId));
+      driverName = driverDoc.exists() ? driverDoc.data().name : "-";
+    }
+
+    if (r.helperId) {
+      const helperDoc = await getDoc(doc(db,"contacts",r.helperId));
+      helperName = helperDoc.exists() ? helperDoc.data().name : "-";
+    }
+
+    if (r.lorryId) {
+      const lorryDoc = await getDoc(doc(db,"lorries",r.lorryId));
+      lorryNumber = lorryDoc.exists() ? lorryDoc.data().number : "-";
+    }
+
+    recordTable.innerHTML += `
+      <tr>
+        <td>${r.so || "-"}</td>
+        <td>${lorryNumber}</td>
+        <td>${driverName}</td>
+        <td>${helperName}</td>
+      </tr>
+    `;
   }
 
-  contactName.value="";
-  contactPhone.value="";
-};
-
-window.deleteContact=id=>deleteDoc(doc(db,"contacts",id));
-
-/* LORRIES */
-onSnapshot(lorriesCol,snap=>{
-  lorrySelect.innerHTML="";
-  lorryTable.innerHTML="";
-
-  snap.forEach(d=>{
-    const l=d.data();
-
-    lorrySelect.innerHTML+=`<option value="${d.id}">${l.number}</option>`;
-
-    lorryTable.innerHTML+=`
-    <tr>
-      <td>${l.number}</td>
-      <td><button onclick="deleteLorry('${d.id}')">❌</button></td>
-    </tr>`;
-  });
 });
-
-window.saveLorry=async()=>{
-  await addDoc(lorriesCol,{number:lorryNumber.value});
-  lorryNumber.value="";
-};
-
-window.deleteLorry=id=>deleteDoc(doc(db,"lorries",id));
-
-/* RECORDS */
-const q=query(recordsCol,orderBy("soNum","desc"));
-
-onSnapshot(q,async snap=>{
-  recordTable.innerHTML="";
-
-  for(const d of snap.docs){
-    const r=d.data();
-
-    const driverDoc=r.driverId?await getDoc(doc(db,"contacts",r.driverId)):null;
-    const helperDoc=r.helperId?await getDoc(doc(db,"contacts",r.helperId)):null;
-    const lorryDoc=r.lorryId?await getDoc(doc(db,"lorries",r.lorryId)):null;
-
-    const driver=r.driver || driverDoc?.data()?.name || "-";
-    const helper=r.helper || helperDoc?.data()?.name || "-";
-    const lorry=r.lorry || lorryDoc?.data()?.number || "-";
-
-    recordTable.innerHTML+=`
-    <tr>
-      <td>${r.so}</td>
-      <td>${lorry}</td>
-      <td>${driver}</td>
-      <td>${helper}</td>
-      <td>${r.start}</td>
-      <td>${r.end||"-"}</td>
-      <td>${r.days}</td>
-      <td>
-        <button onclick="shareWA('${d.id}')">🟢</button>
-        <button onclick="deleteRec('${d.id}')">❌</button>
-      </td>
-    </tr>`;
-  }
-});
-
-recordForm.onsubmit=async e=>{
-  e.preventDefault();
-  const soNum=Number(soNumber.value);
-
-  await addDoc(recordsCol,{
-    so:"SO-"+soNum,
-    soNum,
-    lorryId:lorrySelect.value,
-    driverId:driverSelect.value,
-    helperId:helperSelect.value,
-    start:startDate.value,
-    end:endDate.value||"",
-    days:endDate.value
-      ? Math.ceil((new Date(endDate.value)-new Date(startDate.value))/86400000)+1
-      : "In Progress"
-  });
-
-  closeRecord();
-};
-
-window.deleteRec=id=>deleteDoc(doc(db,"records",id));
-
-window.shareWA=async id=>{
-  const r=(await getDoc(doc(db,"records",id))).data();
-
-  const driver=(await getDoc(doc(db,"contacts",r.driverId))).data();
-  const helper=(await getDoc(doc(db,"contacts",r.helperId))).data();
-  const lorry=(await getDoc(doc(db,"lorries",r.lorryId))).data();
-
-  const d=new Date(r.start);
-  const date=`${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
-
-  const msg=
-`${date} Loaded
-Order Number - ${r.so}
-Lorry Number: ${lorry.number}
-Driver :- ${driver.name} - ${driver.phone}
-Poter :- ${helper.name} - ${helper.phone}`;
-
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
-};
-
-/* MODALS */
-openFormBtn.onclick=()=>recordModal.style.display="flex";
-manageContactsBtn.onclick=()=>contactModal.style.display="flex";
-manageLorriesBtn.onclick=()=>lorryModal.style.display="flex";
-
-window.closeRecord=()=>recordModal.style.display="none";
-window.closeContacts=()=>contactModal.style.display="none";
-window.closeLorries=()=>lorryModal.style.display="none";
