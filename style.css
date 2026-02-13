@@ -1,20 +1,15 @@
 body {
   font-family: Arial;
-  background: #f4f6f9;
   margin: 0;
   padding: 20px;
+  background: #f4f6f9;
 }
 
 header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   flex-wrap: wrap;
   margin-bottom: 20px;
-}
-
-.header-buttons button {
-  margin-left: 8px;
 }
 
 button {
@@ -26,19 +21,15 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
-}
+button:hover { opacity: 0.9; }
 
-.table-wrapper {
-  overflow-x: auto;
-}
+.table-wrapper { overflow-x: auto; }
 
 table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  min-width: 750px;
+  min-width: 700px;
 }
 
 th, td {
@@ -47,10 +38,7 @@ th, td {
   text-align: center;
 }
 
-th {
-  background: #007a2f;
-  color: white;
-}
+th { background: #007a2f; color: white; }
 
 .modal {
   display: none;
@@ -61,56 +49,25 @@ th {
 
 .modal-box {
   background: white;
-  width: 450px;
-  max-height: 90vh;
+  width: 400px;
   margin: 40px auto;
+  padding: 20px;
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header,
-.modal-footer {
-  padding: 10px;
-  background: #eee;
-  display: flex;
-  justify-content: space-between;
-}
-
-.modal-body {
-  padding: 15px;
-  overflow-y: auto;
 }
 
 input, select {
   width: 100%;
   padding: 6px;
-  margin-top: 5px;
   margin-bottom: 10px;
 }
 
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* MOBILE */
-@media (max-width: 768px) {
-
-  body {
-    padding: 10px;
-  }
-
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .header-buttons {
-    margin-top: 10px;
-  }
-
-  .modal-box {
-    width: 95%;
-    margin: 20px auto;
-  }
-
-  table {
-    min-width: 600px;
-  }
+@media (max-width:768px) {
+  body { padding: 10px; }
+  .modal-box { width: 95%; }
 }
