@@ -1,8 +1,9 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   margin: 0;
   padding: 20px;
-  background: #f4f6f9;
+  background: #f5f6f8;
+  color: #333;
 }
 
 /* HEADER */
@@ -10,50 +11,81 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+h2 {
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .header-buttons {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 button {
-  padding: 8px 14px;
-  background: #007a2f;
+  background: #2ca01c;
   color: white;
   border: none;
-  border-radius: 6px;
+  padding: 7px 14px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 button:hover {
-  opacity: 0.9;
+  background: #248a17;
 }
 
-/* TABLE DESKTOP */
+/* TABLE WRAPPER */
 .table-wrapper {
-  overflow-x: auto;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  overflow: auto;
 }
 
+/* TABLE */
 table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  min-width: 900px;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+thead {
+  background: #f1f3f5;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 th {
-  background: #007a2f;
-  color: white;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd;
+  color: #444;
+}
+
+td {
+  padding: 10px;
+  font-size: 13px;
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+  background: #f9fbfd;
+}
+
+/* ACTION BUTTONS */
+td button {
+  padding: 5px 10px;
+  font-size: 12px;
+  margin-right: 4px;
 }
 
 /* MODAL */
@@ -61,28 +93,31 @@ th {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,0.5);
   justify-content: center;
   align-items: center;
-  padding: 10px;
 }
 
 .modal-box {
   background: white;
   width: 420px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 20px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.modal-box h3 {
+  margin-top: 0;
+  font-size: 16px;
 }
 
 input, select {
   width: 100%;
   padding: 8px;
   margin-bottom: 12px;
-  border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 14px;
+  border-radius: 4px;
+  font-size: 13px;
 }
 
 .modal-buttons {
@@ -90,54 +125,24 @@ input, select {
   justify-content: space-between;
 }
 
-/* ========================= */
-/* 🔥 MOBILE CARD VERSION 🔥 */
-/* ========================= */
-
+/* MOBILE */
 @media (max-width: 768px) {
 
   body {
-    padding: 12px;
+    padding: 10px;
   }
 
-  table, thead, tbody, th, td, tr {
-    display: block;
-  }
-
-  thead {
-    display: none;
-  }
-
-  tr {
-    background: white;
-    margin-bottom: 15px;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-  }
-
-  td {
-    border: none;
-    text-align: left;
-    padding: 6px 0;
-    font-size: 14px;
-  }
-
-  td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: #007a2f;
-    display: block;
-    margin-bottom: 2px;
+  table {
+    min-width: 700px;
   }
 
   button {
-    width: 100%;
-    margin-top: 6px;
+    font-size: 12px;
+    padding: 6px 10px;
   }
 
   .modal-box {
-    width: 100%;
+    width: 95%;
   }
 
 }
