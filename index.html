@@ -1,85 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Transport Loading System</title>
+  <title>Test Version</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <h2>Transport Loading System</h2>
-  <div class="header-buttons">
-    <button id="manageContactsBtn">Contacts</button>
-    <button id="manageLorriesBtn">Lorries</button>
-    <button id="openFormBtn">+ Add Record</button>
-  </div>
-</header>
+<h2>Transport Test</h2>
 
-<div class="table-wrapper">
-  <table>
-    <thead>
-      <tr>
-        <th>SO</th>
-        <th>Lorry</th>
-        <th>Driver</th>
-        <th>Helper</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Days</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="recordTable"></tbody>
-  </table>
-</div>
+<button id="openFormBtn">Add Record</button>
+<button id="manageContactsBtn">Contacts</button>
+<button id="manageLorriesBtn">Lorries</button>
 
-<!-- RECORD MODAL -->
-<div class="modal" id="recordModal">
-  <div class="modal-box">
-    <h3>Create Record</h3>
-    <form id="recordForm">
-      <input id="soNumber" type="number" placeholder="SO Number" required>
-      <select id="lorrySelect" required></select>
-      <select id="driverSelect" required></select>
-      <select id="helperSelect" required></select>
-      <input type="date" id="startDate" required>
-      <input type="date" id="endDate">
-      <div class="modal-buttons">
-        <button type="button" onclick="closeRecord()">Cancel</button>
-        <button type="submit">Save</button>
-      </div>
-    </form>
-  </div>
-</div>
+<br><br>
 
-<!-- CONTACT MODAL -->
-<div class="modal" id="contactModal">
-  <div class="modal-box">
-    <h3>Manage Contacts</h3>
-    <select id="contactType">
-      <option value="driver">Driver</option>
-      <option value="helper">Helper</option>
-    </select>
-    <input id="contactName" placeholder="Name">
-    <input id="contactPhone" placeholder="Phone">
-    <button onclick="saveContact()">Save</button>
-    <table>
-      <tbody id="contactTable"></tbody>
-    </table>
-  </div>
-</div>
+<select id="driverSelect"></select>
+<select id="helperSelect"></select>
+<select id="lorrySelect"></select>
 
-<!-- LORRY MODAL -->
-<div class="modal" id="lorryModal">
-  <div class="modal-box">
-    <h3>Manage Lorries</h3>
-    <input id="lorryNumber" placeholder="Lorry Number">
-    <button onclick="saveLorry()">Save</button>
-    <table>
-      <tbody id="lorryTable"></tbody>
-    </table>
-  </div>
-</div>
+<br><br>
 
-<script type="module" src="scri
+<table border="1">
+  <thead>
+    <tr>
+      <th>SO</th>
+      <th>Lorry</th>
+      <th>Driver</th>
+      <th>Helper</th>
+    </tr>
+  </thead>
+  <tbody id="recordTable"></tbody>
+</table>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
