@@ -1,5 +1,5 @@
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 20px;
   background: #f4f6f9;
@@ -8,6 +8,7 @@ body {
 header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
@@ -21,9 +22,13 @@ button {
   cursor: pointer;
 }
 
-button:hover { opacity: 0.9; }
+button:hover {
+  opacity: 0.9;
+}
 
-.table-wrapper { overflow-x: auto; }
+.table-wrapper {
+  overflow-x: auto;
+}
 
 table {
   width: 100%;
@@ -38,8 +43,12 @@ th, td {
   text-align: center;
 }
 
-th { background: #007a2f; color: white; }
+th {
+  background: #007a2f;
+  color: white;
+}
 
+/* MODAL */
 .modal {
   display: none;
   position: fixed;
@@ -51,7 +60,7 @@ th { background: #007a2f; color: white; }
 
 .modal-box {
   background: white;
-  width: 400px;
+  width: 420px;
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 8px;
@@ -62,6 +71,8 @@ input, select {
   width: 100%;
   padding: 6px;
   margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
 .modal-buttons {
@@ -70,29 +81,31 @@ input, select {
 }
 
 /* MOBILE CARD VIEW */
-@media (max-width:600px){
+@media (max-width: 600px) {
 
-  table, thead, tbody, th, td, tr{
-    display:block;
+  body {
+    padding: 10px;
   }
 
-  thead{ display:none; }
-
-  tr{
-    margin-bottom:15px;
-    background:white;
-    padding:10px;
-    border-radius:6px;
+  table, thead, tbody, th, td, tr {
+    display: block;
   }
 
-  td{
-    border:none;
-    text-align:left;
-    padding:4px 0;
+  thead {
+    display: none;
   }
 
-  td::before{
-    font-weight:bold;
-    display:block;
+  tr {
+    background: white;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 6px;
   }
+
+  td {
+    border: none;
+    text-align: left;
+    padding: 4px 0;
+  }
+
 }
