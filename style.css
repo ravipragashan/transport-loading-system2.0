@@ -1,81 +1,95 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 16px;
+  padding: 30px;
   background: #f4f6f9;
 }
 
 /* HEADER */
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.header-buttons {
+header h2 {
+  margin: 0;
+}
+
+/* TABS */
+.tabs {
   display: flex;
-  gap: 6px;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.tab-btn.active {
+  background: #007a2f;
+  color: white;
+}
+
+/* TAB CONTENT */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* FORM ROW */
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
   flex-wrap: wrap;
+}
+
+input, select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 button {
-  padding: 6px 12px;
+  padding: 8px 14px;
   background: #007a2f;
   color: white;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-/* TABLE WRAPPER */
-.table-wrapper {
-  overflow-x: auto;
-  background: white;
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  cursor: pointer;
 }
 
 /* TABLE */
+.table-wrapper {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px; /* forces scroll on mobile */
-}
-
-th, td {
-  padding: 8px 10px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-  font-size: 13px;
+  min-width: 800px;
 }
 
 th {
   background: #007a2f;
   color: white;
-  font-weight: 600;
-  white-space: nowrap;
+  text-align: left;
+  padding: 12px;
 }
 
 td {
-  white-space: nowrap;
-}
-
-tr:hover {
-  background: #f9f9f9;
-}
-
-/* ACTION BUTTONS */
-td button {
-  padding: 4px 8px;
-  font-size: 12px;
-  margin-right: 4px;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
 }
 
 /* MODAL */
@@ -83,60 +97,44 @@ td button {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,.5);
   justify-content: center;
   align-items: center;
-  padding: 10px;
 }
 
 .modal-box {
   background: white;
-  width: 400px;
-  max-height: 90vh;
+  width: 500px;
+  max-height: 85vh;
   overflow-y: auto;
-  border-radius: 8px;
-  padding: 18px;
-}
-
-input, select {
-  width: 100%;
-  padding: 7px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  border-radius: 10px;
+  padding: 25px;
 }
 
 .modal-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-/* ========================= */
-/* QB STYLE MOBILE FIX */
-/* ========================= */
-
-@media (max-width: 768px) {
+/* MOBILE */
+@media (max-width: 768px){
 
   body {
-    padding: 10px;
+    padding: 15px;
   }
 
-  table {
-    min-width: 900px; /* keeps QB scroll behavior */
+  .tabs {
+    flex-direction: column;
   }
 
-  th, td {
-    padding: 6px 8px;
-    font-size: 12px;
-  }
-
-  button {
-    font-size: 12px;
-    padding: 5px 8px;
+  .form-row {
+    flex-direction: column;
   }
 
   .modal-box {
-    width: 100%;
+    width: 95%;
   }
+
 }
