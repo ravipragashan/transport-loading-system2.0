@@ -9,37 +9,98 @@
 
 <header>
   <h2>Transport Loading System</h2>
-  <div class="header-buttons">
-    <button id="manageContactsBtn">Contacts</button>
-    <button id="manageLorriesBtn">Lorries</button>
-    <button id="openFormBtn">+ Add Record</button>
-  </div>
 </header>
 
-<div class="table-wrapper">
-  <table>
-    <thead>
-      <tr>
-        <th>SO</th>
-        <th>Lorry</th>
-        <th>Driver</th>
-        <th>Helper</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Days</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="recordTable"></tbody>
-  </table>
+<div class="tabs">
+  <button class="tab-btn active" onclick="openTab(event,'recordsTab')">Records</button>
+  <button class="tab-btn" onclick="openTab(event,'contactsTab')">Contacts</button>
+  <button class="tab-btn" onclick="openTab(event,'lorriesTab')">Lorries</button>
+</div>
+
+<!-- ================= RECORDS ================= -->
+<div id="recordsTab" class="tab-content active">
+
+  <div class="top-bar">
+    <button id="openFormBtn">+ Add Record</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>SO</th>
+          <th>Lorry</th>
+          <th>Driver</th>
+          <th>Helper</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Days</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="recordTable"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ================= CONTACTS ================= -->
+<div id="contactsTab" class="tab-content">
+
+  <div class="form-row">
+    <select id="contactType">
+      <option value="driver">Driver</option>
+      <option value="helper">Helper</option>
+    </select>
+    <input id="contactName" placeholder="Name">
+    <input id="contactPhone" placeholder="Phone">
+    <button onclick="saveContact()">Save</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Type</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="contactTable"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ================= LORRIES ================= -->
+<div id="lorriesTab" class="tab-content">
+
+  <div class="form-row">
+    <input id="lorryNumber" placeholder="Lorry Number">
+    <button onclick="saveLorry()">Save</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Lorry Number</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="lorryTable"></tbody>
+    </table>
+  </div>
+
 </div>
 
 <!-- ================= RECORD MODAL ================= -->
 <div class="modal" id="recordModal">
   <div class="modal-box">
-    <h3>Create Record</h3>
-    <form id="recordForm">
+    <h3>Create / Edit Record</h3>
 
+    <form id="recordForm">
       <input id="soNumber" type="number" placeholder="SO Number" required>
 
       <label>Lorry</label>
@@ -61,68 +122,10 @@
         <button type="button" onclick="closeRecord()">Cancel</button>
         <button type="submit">Save</button>
       </div>
-
     </form>
   </div>
 </div>
 
-<!-- ================= CONTACT MODAL ================= -->
-<div class="modal" id="contactModal">
-  <div class="modal-box">
-    <h3>Manage Contacts</h3>
-
-    <select id="contactType">
-      <option value="driver">Driver</option>
-      <option value="helper">Helper</option>
-    </select>
-
-    <input id="contactName" placeholder="Name">
-    <input id="contactPhone" placeholder="Phone">
-
-    <button onclick="saveContact()">Save</button>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Type</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="contactTable"></tbody>
-    </table>
-
-    <button onclick="closeContacts()">Close</button>
-
-  </div>
-</div>
-
-<!-- ================= LORRY MODAL ================= -->
-<div class="modal" id="lorryModal">
-  <div class="modal-box">
-    <h3>Manage Lorries</h3>
-
-    <input id="lorryNumber" placeholder="Lorry Number">
-
-    <button onclick="saveLorry()">Save</button>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Lorry Number</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="lorryTable"></tbody>
-    </table>
-
-    <button onclick="closeLorries()">Close</button>
-
-  </div>
-</div>
-
-<!-- IMPORTANT: MUST BE MODULE -->
 <script type="module" src="script.js"></script>
 
 </body>
