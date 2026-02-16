@@ -1,275 +1,148 @@
-import { db } from "./firebase.js";
-import {
-  collection,
-  addDoc,
-  deleteDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  onSnapshot,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f9;
+  padding: 20px;
+}
 
-/* ================= DOM ================= */
+/* ================= HEADER ================= */
 
-const recordTable = document.getElementById("recordTable");
-const recordForm = document.getElementById("recordForm");
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
 
-const driverSelect = document.getElementById("driverSelect");
-const helperSelect = document.getElementById("helperSelect");
-const lorrySelect = document.getElementById("lorrySelect");
+.header-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
-const contactTable = document.getElementById("contactTable");
-const lorryTable = document.getElementById("lorryTable");
+button {
+  padding: 8px 14px;
+  background: #007a2f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
 
-const soNumber = document.getElementById("soNumber");
-const startDate = document.getElementById("startDate");
-const endDate = document.getElementById("endDate");
+button:hover {
+  opacity: 0.9;
+}
 
-const contactType = document.getElementById("contactType");
-const contactName = document.getElementById("contactName");
-const contactPhone = document.getElementById("contactPhone");
+/* ================= TABLE ================= */
 
-const lorryNumber = document.getElementById("lorryNumber");
+.table-wrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
 
-const recordModal = document.getElementById("recordModal");
-const contactModal = document.getElementById("contactModal");
-const lorryModal = document.getElementById("lorryModal");
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
 
-const openFormBtn = document.getElementById("openFormBtn");
-const manageContactsBtn = document.getElementById("manageContactsBtn");
-const manageLorriesBtn = document.getElementById("manageLorriesBtn");
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 14px;
+}
 
-/* ================= COLLECTIONS ================= */
+th {
+  background: #007a2f;
+  color: white;
+  font-weight: 600;
+}
 
-const recordsCol = collection(db,"records");
-const contactsCol = collection(db,"contacts");
-const lorriesCol = collection(db,"lorries");
+tr:hover {
+  background: #fafafa;
+}
 
-/* ================= CONTACTS ================= */
+/* ================= MODAL ================= */
 
-let editContactId = null;
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 1000;
+}
 
-onSnapshot(contactsCol, snap => {
+.modal-box {
+  background: white;
+  width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: fadeIn 0.2s ease;
+}
 
-  driverSelect.innerHTML = "";
-  helperSelect.innerHTML = "";
-  contactTable.innerHTML = "";
+.modal-box h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
 
-  snap.forEach(d => {
-    const c = d.data();
+input, select {
+  width: 100%;
+  padding: 9px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
 
-    if(c.type === "driver")
-      driverSelect.innerHTML += `<option value="${d.id}">${c.name}</option>`;
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
 
-    if(c.type === "helper")
-      helperSelect.innerHTML += `<option value="${d.id}">${c.name}</option>`;
+/* ================= MOBILE VERSION ================= */
 
-    contactTable.innerHTML += `
-      <tr>
-        <td>${c.name}</td>
-        <td>${c.phone}</td>
-        <td>${c.type}</td>
-        <td>
-          <button onclick="editContact('${d.id}','${c.name}','${c.phone}','${c.type}')">✏</button>
-          <button onclick="deleteContact('${d.id}')">❌</button>
-        </td>
-      </tr>`;
-  });
+@media (max-width: 768px) {
 
-});
-
-window.editContact = (id,name,phone,type)=>{
-  editContactId = id;
-  contactName.value = name;
-  contactPhone.value = phone;
-  contactType.value = type;
-};
-
-window.saveContact = async ()=>{
-  const data = {
-    type: contactType.value,
-    name: contactName.value,
-    phone: contactPhone.value
-  };
-
-  if(editContactId){
-    await updateDoc(doc(db,"contacts",editContactId), data);
-    editContactId = null;
-  } else {
-    await addDoc(contactsCol, data);
+  body {
+    padding: 10px;
   }
 
-  contactName.value="";
-  contactPhone.value="";
-};
-
-window.deleteContact = id =>
-  deleteDoc(doc(db,"contacts",id));
-
-/* ================= LORRIES ================= */
-
-onSnapshot(lorriesCol, snap=>{
-
-  lorrySelect.innerHTML="";
-  lorryTable.innerHTML="";
-
-  snap.forEach(d=>{
-    const l=d.data();
-
-    lorrySelect.innerHTML+=`<option value="${d.id}">${l.number}</option>`;
-
-    lorryTable.innerHTML+=`
-      <tr>
-        <td>${l.number}</td>
-        <td><button onclick="deleteLorry('${d.id}')">❌</button></td>
-      </tr>`;
-  });
-
-});
-
-window.saveLorry = async ()=>{
-  await addDoc(lorriesCol,{ number: lorryNumber.value });
-  lorryNumber.value="";
-};
-
-window.deleteLorry = id =>
-  deleteDoc(doc(db,"lorries",id));
-
-/* ================= RECORDS ================= */
-
-let editRecordId = null;
-
-const q = query(recordsCol, orderBy("soNum","desc"));
-
-onSnapshot(q, async snap=>{
-
-  recordTable.innerHTML="";
-
-  for(const d of snap.docs){
-
-    const r=d.data();
-
-    let driver="-", helper="-", lorry="-";
-
-    if(r.driverId){
-      const driverDoc = await getDoc(doc(db,"contacts",r.driverId));
-      driver = driverDoc.exists()? driverDoc.data().name : "-";
-    } else if(r.driver){
-      driver = r.driver;
-    }
-
-    if(r.helperId){
-      const helperDoc = await getDoc(doc(db,"contacts",r.helperId));
-      helper = helperDoc.exists()? helperDoc.data().name : "-";
-    } else if(r.helper){
-      helper = r.helper;
-    }
-
-    if(r.lorryId){
-      const lorryDoc = await getDoc(doc(db,"lorries",r.lorryId));
-      lorry = lorryDoc.exists()? lorryDoc.data().number : "-";
-    } else if(r.lorry){
-      lorry = r.lorry;
-    }
-
-    recordTable.innerHTML += `
-      <tr>
-        <td>${r.so}</td>
-        <td>${lorry}</td>
-        <td>${driver}</td>
-        <td>${helper}</td>
-        <td>${r.start}</td>
-        <td>${r.end||"-"}</td>
-        <td>${r.days}</td>
-        <td>
-          <button onclick="editRec('${d.id}')">✏</button>
-          <button onclick="shareWA('${d.id}')">🟢</button>
-          <button onclick="deleteRec('${d.id}')">❌</button>
-        </td>
-      </tr>`;
+  table {
+    min-width: 900px;
   }
 
-});
-
-window.editRec = async (id)=>{
-
-  const snap = await getDoc(doc(db,"records",id));
-  const r = snap.data();
-
-  editRecordId = id;
-
-  soNumber.value = r.soNum;
-  startDate.value = r.start;
-  endDate.value = r.end || "";
-
-  driverSelect.value = r.driverId || "";
-  helperSelect.value = r.helperId || "";
-  lorrySelect.value = r.lorryId || "";
-
-  recordModal.style.display="flex";
-};
-
-recordForm.onsubmit = async e=>{
-  e.preventDefault();
-
-  const soNum = Number(soNumber.value);
-
-  const data = {
-    so: "SO-"+soNum,
-    soNum,
-    driverId: driverSelect.value,
-    helperId: helperSelect.value,
-    lorryId: lorrySelect.value,
-    start: startDate.value,
-    end: endDate.value||"",
-    days: endDate.value
-      ? Math.ceil((new Date(endDate.value)-new Date(startDate.value))/86400000)+1
-      : "In Progress"
-  };
-
-  if(editRecordId){
-    await updateDoc(doc(db,"records",editRecordId), data);
-    editRecordId = null;
-  } else {
-    await addDoc(recordsCol, data);
+  /* Modal becomes full screen on mobile */
+  .modal {
+    align-items: flex-end;
+    padding: 0;
   }
 
-  closeRecord();
-};
+  .modal-box {
+    width: 100%;
+    height: 95vh;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+  }
 
-window.deleteRec = id =>
-  deleteDoc(doc(db,"records",id));
+  .modal-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
 
-/* ================= WHATSAPP ================= */
+  .modal-buttons button {
+    width: 100%;
+  }
 
-window.shareWA = async id=>{
-
-  const r = (await getDoc(doc(db,"records",id))).data();
-  const driver = (await getDoc(doc(db,"contacts",r.driverId))).data();
-  const helper = (await getDoc(doc(db,"contacts",r.helperId))).data();
-  const lorry = (await getDoc(doc(db,"lorries",r.lorryId))).data();
-
-  const d = new Date(r.start);
-  const date = `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
-
-  const msg =
-`${date} Loaded
-Order Number - ${r.so}
-Lorry Number: ${lorry.number}
-Driver :- ${driver.name} - ${driver.phone}
-Poter :- ${helper.name} - ${helper.phone}`;
-
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
-};
-
-/* ================= MODALS ================= */
-
-openFormBtn.onclick = ()=> recordModal.style.display="flex";
-manageContactsBtn.onclick = ()=> contactModal.style.display="flex";
-manageLorriesBtn.onclick = ()=> lorryModal.style.display="flex";
-
-window.closeRecord = ()=> recordModal.style.display="none";
-window.closeContacts = ()=> contactModal.style.display="none";
-window.closeLorries = ()=> lorryModal.style.display="none";
+}
