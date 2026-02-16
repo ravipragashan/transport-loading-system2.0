@@ -6,9 +6,7 @@ import {
   doc,
   getDoc,
   updateDoc,
-  onSnapshot,
-  query,
-  orderBy
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* ================= DOM ================= */
@@ -38,22 +36,9 @@ const openFormBtn = document.getElementById("openFormBtn");
 
 /* ================= COLLECTIONS ================= */
 
-const recordsCol = collection(db, "records");
-const contactsCol = collection(db, "contacts");
-const lorriesCol = collection(db, "lorries");
-
-/* ================= TAB SWITCH ================= */
-
-window.openTab = (evt, tabId) => {
-  document.querySelectorAll(".tab-content")
-    .forEach(tab => tab.classList.remove("active"));
-
-  document.querySelectorAll(".tab-btn")
-    .forEach(btn => btn.classList.remove("active"));
-
-  document.getElementById(tabId).classList.add("active");
-  evt.currentTarget.classList.add("active");
-};
+const recordsCol = collection(db,"records");
+const contactsCol = collection(db,"contacts");
+const lorriesCol = collection(db,"lorries");
 
 /* ================= CONTACTS ================= */
 
@@ -68,10 +53,10 @@ onSnapshot(contactsCol, snap => {
   snap.forEach(d => {
     const c = d.data();
 
-    if (c.type === "driver")
+    if(c.type === "driver")
       driverSelect.innerHTML += `<option value="${d.id}">${c.name}</option>`;
 
-    if (c.type === "helper")
+    if(c.type === "helper")
       helperSelect.innerHTML += `<option value="${d.id}">${c.name}</option>`;
 
     contactTable.innerHTML += `
@@ -88,48 +73,47 @@ onSnapshot(contactsCol, snap => {
 
 });
 
-window.editContact = (id, name, phone, type) => {
+window.editContact = (id,name,phone,type)=>{
   editContactId = id;
   contactName.value = name;
   contactPhone.value = phone;
   contactType.value = type;
 };
 
-window.saveContact = async () => {
-
+window.saveContact = async ()=>{
   const data = {
     type: contactType.value,
     name: contactName.value,
     phone: contactPhone.value
   };
 
-  if (editContactId) {
-    await updateDoc(doc(db, "contacts", editContactId), data);
+  if(editContactId){
+    await updateDoc(doc(db,"contacts",editContactId),data);
     editContactId = null;
   } else {
-    await addDoc(contactsCol, data);
+    await addDoc(contactsCol,data);
   }
 
-  contactName.value = "";
-  contactPhone.value = "";
+  contactName.value="";
+  contactPhone.value="";
 };
 
 window.deleteContact = id =>
-  deleteDoc(doc(db, "contacts", id));
+  deleteDoc(doc(db,"contacts",id));
 
 /* ================= LORRIES ================= */
 
-onSnapshot(lorriesCol, snap => {
+onSnapshot(lorriesCol, snap=>{
 
-  lorrySelect.innerHTML = "";
-  lorryTable.innerHTML = "";
+  lorrySelect.innerHTML="";
+  lorryTable.innerHTML="";
 
-  snap.forEach(d => {
-    const l = d.data();
+  snap.forEach(d=>{
+    const l=d.data();
 
-    lorrySelect.innerHTML += `<option value="${d.id}">${l.number}</option>`;
+    lorrySelect.innerHTML+=`<option value="${d.id}">${l.number}</option>`;
 
-    lorryTable.innerHTML += `
+    lorryTable.innerHTML+=`
       <tr>
         <td>${l.number}</td>
         <td><button onclick="deleteLorry('${d.id}')">❌</button></td>
@@ -138,55 +122,56 @@ onSnapshot(lorriesCol, snap => {
 
 });
 
-window.saveLorry = async () => {
-  if (!lorryNumber.value) return;
-  await addDoc(lorriesCol, { number: lorryNumber.value });
-  lorryNumber.value = "";
+window.saveLorry = async ()=>{
+  if(!lorryNumber.value) return;
+  await addDoc(lorriesCol,{number:lorryNumber.value});
+  lorryNumber.value="";
 };
 
 window.deleteLorry = id =>
-  deleteDoc(doc(db, "lorries", id));
+  deleteDoc(doc(db,"lorries",id));
 
 /* ================= RECORDS ================= */
 
 let editRecordId = null;
 
-const q = query(recordsCol, orderBy("soNum", "desc"));
+onSnapshot(recordsCol, async snap => {
 
-onSnapshot(q, async snap => {
+  recordTable.innerHTML="";
 
-  recordTable.innerHTML = "";
-
-  for (const d of snap.docs) {
+  for(const d of snap.docs){
 
     const r = d.data();
 
-    let driver = "-", helper = "-", lorry = "-";
+    // Works for old + new format
+    let driver = r.driverText || r.driver || "-";
+    let helper = r.helperText || r.helper || "-";
+    let lorry = r.lorryText || r.lorry || "-";
 
-    if (r.driverId) {
-      const driverDoc = await getDoc(doc(db, "contacts", r.driverId));
-      driver = driverDoc.exists() ? driverDoc.data().name : "-";
+    if(r.driverId){
+      const driverDoc = await getDoc(doc(db,"contacts",r.driverId));
+      if(driverDoc.exists()) driver = driverDoc.data().name;
     }
 
-    if (r.helperId) {
-      const helperDoc = await getDoc(doc(db, "contacts", r.helperId));
-      helper = helperDoc.exists() ? helperDoc.data().name : "-";
+    if(r.helperId){
+      const helperDoc = await getDoc(doc(db,"contacts",r.helperId));
+      if(helperDoc.exists()) helper = helperDoc.data().name;
     }
 
-    if (r.lorryId) {
-      const lorryDoc = await getDoc(doc(db, "lorries", r.lorryId));
-      lorry = lorryDoc.exists() ? lorryDoc.data().number : "-";
+    if(r.lorryId){
+      const lorryDoc = await getDoc(doc(db,"lorries",r.lorryId));
+      if(lorryDoc.exists()) lorry = lorryDoc.data().number;
     }
 
-    recordTable.innerHTML += `
+    recordTable.innerHTML+=`
       <tr>
-        <td>${r.so}</td>
+        <td>${r.so || "-"}</td>
         <td>${lorry}</td>
         <td>${driver}</td>
         <td>${helper}</td>
-        <td>${r.start}</td>
+        <td>${r.start || "-"}</td>
         <td>${r.end || "-"}</td>
-        <td>${r.days}</td>
+        <td>${r.days || "-"}</td>
         <td>
           <button onclick="editRec('${d.id}')">✏</button>
           <button onclick="shareWA('${d.id}')">🟢</button>
@@ -199,71 +184,92 @@ onSnapshot(q, async snap => {
 
 /* ================= ADD / EDIT RECORD ================= */
 
-openFormBtn.onclick = () => {
+openFormBtn.onclick = ()=>{
   editRecordId = null;
   recordForm.reset();
-  recordModal.style.display = "flex";
+  recordModal.style.display="flex";
 };
 
-window.editRec = async (id) => {
+window.editRec = async (id)=>{
 
-  const snap = await getDoc(doc(db, "records", id));
+  const snap = await getDoc(doc(db,"records",id));
   const r = snap.data();
 
   editRecordId = id;
 
-  soNumber.value = r.soNum;
-  startDate.value = r.start;
+  soNumber.value = (r.so || "").replace("SO-","");
+  startDate.value = r.start || "";
   endDate.value = r.end || "";
 
   driverSelect.value = r.driverId || "";
   helperSelect.value = r.helperId || "";
   lorrySelect.value = r.lorryId || "";
 
-  recordModal.style.display = "flex";
+  recordModal.style.display="flex";
 };
 
-recordForm.onsubmit = async e => {
+recordForm.onsubmit = async e=>{
   e.preventDefault();
 
-  const soNum = Number(soNumber.value);
+  const soVal = soNumber.value;
 
   const data = {
-    so: "SO-" + soNum,
-    soNum,
-    driverId: driverSelect.value,
-    helperId: helperSelect.value,
-    lorryId: lorrySelect.value,
+    so: "SO-"+soVal,
+    driverId: driverSelect.value || null,
+    helperId: helperSelect.value || null,
+    lorryId: lorrySelect.value || null,
     start: startDate.value,
     end: endDate.value || "",
     days: endDate.value
-      ? Math.ceil((new Date(endDate.value) - new Date(startDate.value)) / 86400000) + 1
+      ? Math.ceil((new Date(endDate.value)-new Date(startDate.value))/86400000)+1
       : "In Progress"
   };
 
-  if (editRecordId) {
-    await updateDoc(doc(db, "records", editRecordId), data);
+  if(editRecordId){
+    await updateDoc(doc(db,"records",editRecordId),data);
     editRecordId = null;
   } else {
-    await addDoc(recordsCol, data);
+    await addDoc(recordsCol,data);
   }
 
-  recordModal.style.display = "none";
+  recordModal.style.display="none";
 };
 
-/* ================= DELETE RECORD ================= */
-
 window.deleteRec = id =>
-  deleteDoc(doc(db, "records", id));
+  deleteDoc(doc(db,"records",id));
 
 /* ================= WHATSAPP ================= */
 
-window.shareWA = async id => {
+window.shareWA = async id=>{
 
-  const r = (await getDoc(doc(db, "records", id))).data();
-  const driver = (await getDoc(doc(db, "contacts", r.driverId))).data();
-  const helper = (await getDoc(doc(db, "contacts", r.helperId))).data();
-  const lorry = (await getDoc(doc(db, "lorries", r.lorryId))).data();
+  const r = (await getDoc(doc(db,"records",id))).data();
+
+  let driver = r.driverText || r.driver || "";
+  let helper = r.helperText || r.helper || "";
+  let lorry = r.lorryText || r.lorry || "";
+
+  if(r.driverId){
+    const driverDoc = await getDoc(doc(db,"contacts",r.driverId));
+    if(driverDoc.exists()){
+      const d = driverDoc.data();
+      driver = `${d.name} - ${d.phone}`;
+    }
+  }
+
+  if(r.helperId){
+    const helperDoc = await getDoc(doc(db,"contacts",r.helperId));
+    if(helperDoc.exists()){
+      const h = helperDoc.data();
+      helper = `${h.name} - ${h.phone}`;
+    }
+  }
+
+  if(r.lorryId){
+    const lorryDoc = await getDoc(doc(db,"lorries",r.lorryId));
+    if(lorryDoc.exists()){
+      lorry = lorryDoc.data().number;
+    }
+  }
 
   const d = new Date(r.start);
   const date = `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
@@ -271,12 +277,11 @@ window.shareWA = async id => {
   const msg =
 `${date} Loaded
 Order Number - ${r.so}
-Lorry Number: ${lorry.number}
-Driver :- ${driver.name} - ${driver.phone}
-Poter :- ${helper.name} - ${helper.phone}`;
+Lorry Number: ${lorry}
+Driver :- ${driver}
+Poter :- ${helper}`;
 
-  window.open("https://wa.me/?text=" + encodeURIComponent(msg));
+  window.open("https://wa.me/?text="+encodeURIComponent(msg));
 };
 
-window.closeRecord = () =>
-  recordModal.style.display = "none";
+window.closeRecord = ()=> recordModal.style.display="none";
