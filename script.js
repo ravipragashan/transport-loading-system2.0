@@ -139,6 +139,8 @@ window.deleteLorry = id =>
 
 /* ================= RECORDS ================= */
 
+let editRecordId = null;
+
 const q = query(recordsCol, orderBy("soNum","desc"));
 
 onSnapshot(q, async snap=>{
@@ -182,6 +184,7 @@ onSnapshot(q, async snap=>{
         <td>${r.end||"-"}</td>
         <td>${r.days}</td>
         <td>
+          <button onclick="editRec('${d.id}')">✏</button>
           <button onclick="shareWA('${d.id}')">🟢</button>
           <button onclick="deleteRec('${d.id}')">❌</button>
         </td>
@@ -190,12 +193,30 @@ onSnapshot(q, async snap=>{
 
 });
 
+window.editRec = async (id)=>{
+
+  const snap = await getDoc(doc(db,"records",id));
+  const r = snap.data();
+
+  editRecordId = id;
+
+  soNumber.value = r.soNum;
+  startDate.value = r.start;
+  endDate.value = r.end || "";
+
+  driverSelect.value = r.driverId || "";
+  helperSelect.value = r.helperId || "";
+  lorrySelect.value = r.lorryId || "";
+
+  recordModal.style.display="flex";
+};
+
 recordForm.onsubmit = async e=>{
   e.preventDefault();
 
   const soNum = Number(soNumber.value);
 
-  await addDoc(recordsCol,{
+  const data = {
     so: "SO-"+soNum,
     soNum,
     driverId: driverSelect.value,
@@ -206,7 +227,14 @@ recordForm.onsubmit = async e=>{
     days: endDate.value
       ? Math.ceil((new Date(endDate.value)-new Date(startDate.value))/86400000)+1
       : "In Progress"
-  });
+  };
+
+  if(editRecordId){
+    await updateDoc(doc(db,"records",editRecordId), data);
+    editRecordId = null;
+  } else {
+    await addDoc(recordsCol, data);
+  }
 
   closeRecord();
 };
@@ -219,7 +247,6 @@ window.deleteRec = id =>
 window.shareWA = async id=>{
 
   const r = (await getDoc(doc(db,"records",id))).data();
-
   const driver = (await getDoc(doc(db,"contacts",r.driverId))).data();
   const helper = (await getDoc(doc(db,"contacts",r.helperId))).data();
   const lorry = (await getDoc(doc(db,"lorries",r.lorryId))).data();
