@@ -12,15 +12,16 @@
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="openTab(event,'recordsTab')">Records</button>
-  <button class="tab-btn" onclick="openTab(event,'contactsTab')">Contacts</button>
-  <button class="tab-btn" onclick="openTab(event,'lorriesTab')">Lorries</button>
+  <button class="tab-btn active" onclick="openTab('recordsTab', this)">Records</button>
+  <button class="tab-btn" onclick="openTab('contactsTab', this)">Contacts</button>
+  <button class="tab-btn" onclick="openTab('lorriesTab', this)">Lorries</button>
 </div>
 
 <!-- ================= RECORDS ================= -->
 <div id="recordsTab" class="tab-content active">
 
   <div class="top-bar">
+    <input id="searchInput" placeholder="Search SO / Driver / Lorry">
     <button id="openFormBtn">+ Add Record</button>
   </div>
 
