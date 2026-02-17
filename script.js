@@ -15,6 +15,7 @@ import {
 
 const recordTable = document.getElementById("recordTable");
 const recordForm = document.getElementById("recordForm");
+const searchInput = document.getElementById("searchInput");
 
 const driverSelect = document.getElementById("driverSelect");
 const helperSelect = document.getElementById("helperSelect");
@@ -38,13 +39,14 @@ const openFormBtn = document.getElementById("openFormBtn");
 
 /* ================= COLLECTIONS ================= */
 
-const recordsCol = collection(db, "records");
-const contactsCol = collection(db, "contacts");
-const lorriesCol = collection(db, "lorries");
+const recordsCol = collection(db,"records");
+const contactsCol = collection(db,"contacts");
+const lorriesCol = collection(db,"lorries");
 
-/* ================= TAB SWITCH ================= */
+/* ================= TAB SYSTEM ================= */
 
 window.openTab = (evt, tabId) => {
+
   document.querySelectorAll(".tab-content")
     .forEach(tab => tab.classList.remove("active"));
 
@@ -61,20 +63,20 @@ let editContactId = null;
 
 onSnapshot(contactsCol, snap => {
 
-  driverSelect.innerHTML = "";
-  helperSelect.innerHTML = "";
-  contactTable.innerHTML = "";
+  driverSelect.innerHTML="";
+  helperSelect.innerHTML="";
+  contactTable.innerHTML="";
 
-  snap.forEach(d => {
-    const c = d.data();
+  snap.forEach(d=>{
+    const c=d.data();
 
-    if (c.type === "driver")
-      driverSelect.innerHTML += `<option value="${d.id}">${c.name}</option>`;
+    if(c.type==="driver")
+      driverSelect.innerHTML+=`<option value="${d.id}">${c.name}</option>`;
 
-    if (c.type === "helper")
-      helperSelect.innerHTML += `<option value="${d.id}">${c.name}</option>`;
+    if(c.type==="helper")
+      helperSelect.innerHTML+=`<option value="${d.id}">${c.name}</option>`;
 
-    contactTable.innerHTML += `
+    contactTable.innerHTML+=`
       <tr>
         <td>${c.name}</td>
         <td>${c.phone}</td>
@@ -88,48 +90,46 @@ onSnapshot(contactsCol, snap => {
 
 });
 
-window.editContact = (id, name, phone, type) => {
-  editContactId = id;
-  contactName.value = name;
-  contactPhone.value = phone;
-  contactType.value = type;
+window.editContact=(id,name,phone,type)=>{
+  editContactId=id;
+  contactName.value=name;
+  contactPhone.value=phone;
+  contactType.value=type;
 };
 
-window.saveContact = async () => {
-
-  const data = {
-    type: contactType.value,
-    name: contactName.value,
-    phone: contactPhone.value
+window.saveContact=async()=>{
+  const data={
+    type:contactType.value,
+    name:contactName.value,
+    phone:contactPhone.value
   };
 
-  if (editContactId) {
-    await updateDoc(doc(db, "contacts", editContactId), data);
-    editContactId = null;
-  } else {
-    await addDoc(contactsCol, data);
+  if(editContactId){
+    await updateDoc(doc(db,"contacts",editContactId),data);
+    editContactId=null;
+  }else{
+    await addDoc(contactsCol,data);
   }
 
-  contactName.value = "";
-  contactPhone.value = "";
+  contactName.value="";
+  contactPhone.value="";
 };
 
-window.deleteContact = id =>
-  deleteDoc(doc(db, "contacts", id));
+window.deleteContact=id=>deleteDoc(doc(db,"contacts",id));
 
 /* ================= LORRIES ================= */
 
-onSnapshot(lorriesCol, snap => {
+onSnapshot(lorriesCol,snap=>{
 
-  lorrySelect.innerHTML = "";
-  lorryTable.innerHTML = "";
+  lorrySelect.innerHTML="";
+  lorryTable.innerHTML="";
 
-  snap.forEach(d => {
-    const l = d.data();
+  snap.forEach(d=>{
+    const l=d.data();
 
-    lorrySelect.innerHTML += `<option value="${d.id}">${l.number}</option>`;
+    lorrySelect.innerHTML+=`<option value="${d.id}">${l.number}</option>`;
 
-    lorryTable.innerHTML += `
+    lorryTable.innerHTML+=`
       <tr>
         <td>${l.number}</td>
         <td><button onclick="deleteLorry('${d.id}')">❌</button></td>
@@ -138,145 +138,159 @@ onSnapshot(lorriesCol, snap => {
 
 });
 
-window.saveLorry = async () => {
-  if (!lorryNumber.value) return;
-  await addDoc(lorriesCol, { number: lorryNumber.value });
-  lorryNumber.value = "";
+window.saveLorry=async()=>{
+  if(!lorryNumber.value) return;
+  await addDoc(lorriesCol,{number:lorryNumber.value});
+  lorryNumber.value="";
 };
 
-window.deleteLorry = id =>
-  deleteDoc(doc(db, "lorries", id));
+window.deleteLorry=id=>deleteDoc(doc(db,"lorries",id));
 
 /* ================= RECORDS ================= */
 
-let editRecordId = null;
+let editRecordId=null;
+let allRecords=[];
 
-const q = query(recordsCol, orderBy("soNum", "desc"));
+const q=query(recordsCol,orderBy("soNum","desc"));
 
-onSnapshot(q, async snap => {
+onSnapshot(q,async snap=>{
 
-  recordTable.innerHTML = "";
+  allRecords=[];
 
-  for (const d of snap.docs) {
+  for(const d of snap.docs){
 
-    const r = d.data();
+    const r=d.data();
 
-    let driver = "-", helper = "-", lorry = "-";
+    let driver="-",helper="-",lorry="-";
 
-    if (r.driverId) {
-      const driverDoc = await getDoc(doc(db, "contacts", r.driverId));
-      driver = driverDoc.exists() ? driverDoc.data().name : "-";
+    if(r.driverId){
+      const docSnap=await getDoc(doc(db,"contacts",r.driverId));
+      if(docSnap.exists()) driver=docSnap.data().name;
+    }else{
+      driver=r.driverText||"-";
     }
 
-    if (r.helperId) {
-      const helperDoc = await getDoc(doc(db, "contacts", r.helperId));
-      helper = helperDoc.exists() ? helperDoc.data().name : "-";
+    if(r.helperId){
+      const docSnap=await getDoc(doc(db,"contacts",r.helperId));
+      if(docSnap.exists()) helper=docSnap.data().name;
+    }else{
+      helper=r.helperText||"-";
     }
 
-    if (r.lorryId) {
-      const lorryDoc = await getDoc(doc(db, "lorries", r.lorryId));
-      lorry = lorryDoc.exists() ? lorryDoc.data().number : "-";
+    if(r.lorryId){
+      const docSnap=await getDoc(doc(db,"lorries",r.lorryId));
+      if(docSnap.exists()) lorry=docSnap.data().number;
+    }else{
+      lorry=r.lorryText||"-";
     }
 
-    recordTable.innerHTML += `
-      <tr>
-        <td>${r.so}</td>
-        <td>${lorry}</td>
-        <td>${driver}</td>
-        <td>${helper}</td>
-        <td>${r.start}</td>
-        <td>${r.end || "-"}</td>
-        <td>${r.days}</td>
-        <td>
-          <button onclick="editRec('${d.id}')">✏</button>
-          <button onclick="shareWA('${d.id}')">🟢</button>
-          <button onclick="deleteRec('${d.id}')">❌</button>
-        </td>
-      </tr>`;
+    allRecords.push({
+      id:d.id,
+      so:r.so,
+      soNum:r.soNum||0,
+      driver,
+      helper,
+      lorry,
+      start:r.start,
+      end:r.end||"-",
+      days:r.days
+    });
   }
+
+  renderRecords(allRecords);
 
 });
 
-/* ================= ADD / EDIT RECORD ================= */
+/* ================= SEARCH ================= */
 
-openFormBtn.onclick = () => {
-  editRecordId = null;
+window.searchRecords=()=>{
+  const term=searchInput.value.toLowerCase();
+
+  const filtered=allRecords.filter(r=>
+    r.so.toLowerCase().includes(term) ||
+    r.driver.toLowerCase().includes(term) ||
+    r.helper.toLowerCase().includes(term) ||
+    r.lorry.toLowerCase().includes(term)
+  );
+
+  renderRecords(filtered);
+};
+
+/* ================= RENDER ================= */
+
+function renderRecords(data){
+
+  recordTable.innerHTML="";
+
+  data.forEach(r=>{
+    recordTable.innerHTML+=`
+      <tr>
+        <td>${r.so}</td>
+        <td>${r.lorry}</td>
+        <td>${r.driver}</td>
+        <td>${r.helper}</td>
+        <td>${r.start}</td>
+        <td>${r.end}</td>
+        <td>${r.days}</td>
+        <td>
+          <button onclick="editRec('${r.id}')">✏</button>
+          <button onclick="deleteRec('${r.id}')">❌</button>
+        </td>
+      </tr>`;
+  });
+
+}
+
+/* ================= ADD / EDIT ================= */
+
+openFormBtn.onclick=()=>{
+  editRecordId=null;
   recordForm.reset();
-  recordModal.style.display = "flex";
+  recordModal.style.display="flex";
 };
 
-window.editRec = async (id) => {
+window.editRec=async(id)=>{
+  const snap=await getDoc(doc(db,"records",id));
+  const r=snap.data();
 
-  const snap = await getDoc(doc(db, "records", id));
-  const r = snap.data();
+  editRecordId=id;
 
-  editRecordId = id;
+  soNumber.value=r.soNum;
+  startDate.value=r.start;
+  endDate.value=r.end||"";
 
-  soNumber.value = r.soNum;
-  startDate.value = r.start;
-  endDate.value = r.end || "";
+  driverSelect.value=r.driverId||"";
+  helperSelect.value=r.helperId||"";
+  lorrySelect.value=r.lorryId||"";
 
-  driverSelect.value = r.driverId || "";
-  helperSelect.value = r.helperId || "";
-  lorrySelect.value = r.lorryId || "";
-
-  recordModal.style.display = "flex";
+  recordModal.style.display="flex";
 };
 
-recordForm.onsubmit = async e => {
+recordForm.onsubmit=async e=>{
   e.preventDefault();
 
-  const soNum = Number(soNumber.value);
+  const soNum=Number(soNumber.value);
 
-  const data = {
-    so: "SO-" + soNum,
+  const data={
+    so:"SO-"+soNum,
     soNum,
-    driverId: driverSelect.value,
-    helperId: helperSelect.value,
-    lorryId: lorrySelect.value,
-    start: startDate.value,
-    end: endDate.value || "",
-    days: endDate.value
-      ? Math.ceil((new Date(endDate.value) - new Date(startDate.value)) / 86400000) + 1
+    driverId:driverSelect.value,
+    helperId:helperSelect.value,
+    lorryId:lorrySelect.value,
+    start:startDate.value,
+    end:endDate.value||"",
+    days:endDate.value
+      ? Math.ceil((new Date(endDate.value)-new Date(startDate.value))/86400000)+1
       : "In Progress"
   };
 
-  if (editRecordId) {
-    await updateDoc(doc(db, "records", editRecordId), data);
-    editRecordId = null;
-  } else {
-    await addDoc(recordsCol, data);
+  if(editRecordId){
+    await updateDoc(doc(db,"records",editRecordId),data);
+  }else{
+    await addDoc(recordsCol,data);
   }
 
-  recordModal.style.display = "none";
+  recordModal.style.display="none";
 };
 
-/* ================= DELETE RECORD ================= */
-
-window.deleteRec = id =>
-  deleteDoc(doc(db, "records", id));
-
-/* ================= WHATSAPP ================= */
-
-window.shareWA = async id => {
-
-  const r = (await getDoc(doc(db, "records", id))).data();
-  const driver = (await getDoc(doc(db, "contacts", r.driverId))).data();
-  const helper = (await getDoc(doc(db, "contacts", r.helperId))).data();
-  const lorry = (await getDoc(doc(db, "lorries", r.lorryId))).data();
-
-  const d = new Date(r.start);
-  const date = `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
-
-  const msg =
-`${date} Loaded
-Order Number - ${r.so}
-Lorry Number: ${lorry.number}
-Driver :- ${driver.name} - ${driver.phone}
-Poter :- ${helper.name} - ${helper.phone}`;
-
-  window.open("https://wa.me/?text=" + encodeURIComponent(msg));
-};
-
-window.closeRecord = () =>
-  recordModal.style.display = "none";
+window.deleteRec=id=>deleteDoc(doc(db,"records",id));
