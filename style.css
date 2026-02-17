@@ -1,20 +1,14 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 30px;
+  padding: 25px;
   background: #f4f6f9;
 }
 
-/* HEADER */
 header {
   margin-bottom: 20px;
 }
 
-header h2 {
-  margin: 0;
-}
-
-/* TABS */
 .tabs {
   display: flex;
   gap: 10px;
@@ -23,10 +17,10 @@ header h2 {
 
 .tab-btn {
   padding: 8px 16px;
-  border: none;
   background: #ddd;
-  cursor: pointer;
+  border: none;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 .tab-btn.active {
@@ -34,7 +28,6 @@ header h2 {
   color: white;
 }
 
-/* TAB CONTENT */
 .tab-content {
   display: none;
 }
@@ -43,7 +36,14 @@ header h2 {
   display: block;
 }
 
-/* FORM ROW */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .form-row {
   display: flex;
   gap: 10px;
@@ -53,8 +53,8 @@ header h2 {
 
 input, select {
   padding: 8px;
-  border-radius: 6px;
   border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
 button {
@@ -66,12 +66,11 @@ button {
   cursor: pointer;
 }
 
-/* TABLE */
 .table-wrapper {
   background: white;
   border-radius: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
   overflow-x: auto;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
 
 table {
@@ -83,8 +82,8 @@ table {
 th {
   background: #007a2f;
   color: white;
-  text-align: left;
   padding: 12px;
+  text-align: left;
 }
 
 td {
@@ -92,7 +91,6 @@ td {
   border-bottom: 1px solid #eee;
 }
 
-/* MODAL */
 .modal {
   display: none;
   position: fixed;
@@ -105,10 +103,8 @@ td {
 .modal-box {
   background: white;
   width: 500px;
-  max-height: 85vh;
-  overflow-y: auto;
-  border-radius: 10px;
   padding: 25px;
+  border-radius: 10px;
 }
 
 .modal-buttons {
@@ -118,23 +114,9 @@ td {
   margin-top: 15px;
 }
 
-/* MOBILE */
-@media (max-width: 768px){
-
-  body {
-    padding: 15px;
-  }
-
-  .tabs {
-    flex-direction: column;
-  }
-
-  .form-row {
-    flex-direction: column;
-  }
-
-  .modal-box {
-    width: 95%;
-  }
-
+@media (max-width:768px){
+  body { padding: 15px; }
+  .tabs { flex-direction: column; }
+  .form-row { flex-direction: column; }
+  .modal-box { width: 95%; }
 }
