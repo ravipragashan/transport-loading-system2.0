@@ -12,12 +12,12 @@
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="openTab('recordsTab', this)">Records</button>
-  <button class="tab-btn" onclick="openTab('contactsTab', this)">Contacts</button>
-  <button class="tab-btn" onclick="openTab('lorriesTab', this)">Lorries</button>
+  <button class="tab-btn active" onclick="openTab('recordsTab',this)">Records</button>
+  <button class="tab-btn" onclick="openTab('contactsTab',this)">Contacts</button>
+  <button class="tab-btn" onclick="openTab('lorriesTab',this)">Lorries</button>
 </div>
 
-<!-- ================= RECORDS ================= -->
+<!-- RECORDS -->
 <div id="recordsTab" class="tab-content active">
 
   <div class="top-bar">
@@ -45,7 +45,7 @@
 
 </div>
 
-<!-- ================= CONTACTS ================= -->
+<!-- CONTACTS -->
 <div id="contactsTab" class="tab-content">
 
   <div class="form-row">
@@ -55,7 +55,7 @@
     </select>
     <input id="contactName" placeholder="Name">
     <input id="contactPhone" placeholder="Phone">
-    <button onclick="saveContact()">Save</button>
+    <button id="saveContactBtn">Save</button>
   </div>
 
   <div class="table-wrapper">
@@ -74,12 +74,12 @@
 
 </div>
 
-<!-- ================= LORRIES ================= -->
+<!-- LORRIES -->
 <div id="lorriesTab" class="tab-content">
 
   <div class="form-row">
     <input id="lorryNumber" placeholder="Lorry Number">
-    <button onclick="saveLorry()">Save</button>
+    <button id="saveLorryBtn">Save</button>
   </div>
 
   <div class="table-wrapper">
@@ -96,7 +96,7 @@
 
 </div>
 
-<!-- ================= RECORD MODAL ================= -->
+<!-- RECORD MODAL -->
 <div class="modal" id="recordModal">
   <div class="modal-box">
     <h3>Create / Edit Record</h3>
@@ -120,7 +120,7 @@
       <input type="date" id="endDate">
 
       <div class="modal-buttons">
-        <button type="button" onclick="closeRecord()">Cancel</button>
+        <button type="button" id="cancelRecordBtn">Cancel</button>
         <button type="submit">Save</button>
       </div>
     </form>
@@ -128,6 +128,5 @@
 </div>
 
 <script type="module" src="script.js"></script>
-
 </body>
 </html>
