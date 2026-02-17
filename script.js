@@ -1,22 +1,27 @@
 import { db } from "./firebase.js";
 import {
-  collection, addDoc, deleteDoc,
-  doc, getDoc, updateDoc,
-  onSnapshot, query, orderBy
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+  onSnapshot,
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* COLLECTIONS */
-const recordsCol = collection(db,"records");
-const contactsCol = collection(db,"contacts");
-const lorriesCol = collection(db,"lorries");
+/* ================= DOM ================= */
 
-/* DOM */
 const recordTable = document.getElementById("recordTable");
 const contactTable = document.getElementById("contactTable");
 const lorryTable = document.getElementById("lorryTable");
+
 const searchInput = document.getElementById("searchInput");
 
+const openFormBtn = document.getElementById("openFormBtn");
 const recordModal = document.getElementById("recordModal");
+const cancelRecordBtn = document.getElementById("cancelRecordBtn");
 const recordForm = document.getElementById("recordForm");
 
 const soNumber = document.getElementById("soNumber");
@@ -27,7 +32,22 @@ const driverSelect = document.getElementById("driverSelect");
 const helperSelect = document.getElementById("helperSelect");
 const lorrySelect = document.getElementById("lorrySelect");
 
-/* TAB */
+const contactType = document.getElementById("contactType");
+const contactName = document.getElementById("contactName");
+const contactPhone = document.getElementById("contactPhone");
+const saveContactBtn = document.getElementById("saveContactBtn");
+
+const lorryNumber = document.getElementById("lorryNumber");
+const saveLorryBtn = document.getElementById("saveLorryBtn");
+
+/* ================= COLLECTIONS ================= */
+
+const recordsCol = collection(db,"records");
+const contactsCol = collection(db,"contacts");
+const lorriesCol = collection(db,"lorries");
+
+/* ================= TAB SYSTEM ================= */
+
 window.openTab = (tabId,btn)=>{
   document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
@@ -35,7 +55,8 @@ window.openTab = (tabId,btn)=>{
   btn.classList.add("active");
 };
 
-/* CONTACTS */
+/* ================= CONTACTS ================= */
+
 onSnapshot(contactsCol,snap=>{
   contactTable.innerHTML="";
   driverSelect.innerHTML="";
@@ -44,10 +65,13 @@ onSnapshot(contactsCol,snap=>{
   snap.forEach(d=>{
     const c=d.data();
 
-    if(c.type==="driver")
+    if(c.type==="driver"){
       driverSelect.innerHTML+=`<option value="${d.id}">${c.name}</option>`;
-    if(c.type==="helper")
+    }
+
+    if(c.type==="helper"){
       helperSelect.innerHTML+=`<option value="${d.id}">${c.name}</option>`;
+    }
 
     contactTable.innerHTML+=`
       <tr>
@@ -59,23 +83,32 @@ onSnapshot(contactsCol,snap=>{
   });
 });
 
-document.getElementById("saveContactBtn").onclick=async()=>{
+saveContactBtn.addEventListener("click", async ()=>{
+  if(!contactName.value || !contactPhone.value) return;
+
   await addDoc(contactsCol,{
     type:contactType.value,
     name:contactName.value,
     phone:contactPhone.value
   });
-};
+
+  contactName.value="";
+  contactPhone.value="";
+});
 
 window.deleteContact=id=>deleteDoc(doc(db,"contacts",id));
 
-/* LORRIES */
+/* ================= LORRIES ================= */
+
 onSnapshot(lorriesCol,snap=>{
   lorryTable.innerHTML="";
   lorrySelect.innerHTML="";
+
   snap.forEach(d=>{
     const l=d.data();
+
     lorrySelect.innerHTML+=`<option value="${d.id}">${l.number}</option>`;
+
     lorryTable.innerHTML+=`
       <tr>
         <td>${l.number}</td>
@@ -84,13 +117,17 @@ onSnapshot(lorriesCol,snap=>{
   });
 });
 
-document.getElementById("saveLorryBtn").onclick=async()=>{
+saveLorryBtn.addEventListener("click", async ()=>{
+  if(!lorryNumber.value) return;
+
   await addDoc(lorriesCol,{number:lorryNumber.value});
-};
+  lorryNumber.value="";
+});
 
 window.deleteLorry=id=>deleteDoc(doc(db,"lorries",id));
 
-/* RECORDS SORTED BIG FIRST */
+/* ================= RECORDS ================= */
+
 let allRecords=[];
 const q=query(recordsCol,orderBy("soNum","desc"));
 
@@ -98,6 +135,7 @@ onSnapshot(q,async snap=>{
   allRecords=[];
   for(const d of snap.docs){
     const r=d.data();
+
     let driver=r.driverText||"-";
     let helper=r.helperText||"-";
     let lorry=r.lorryText||"-";
@@ -106,17 +144,29 @@ onSnapshot(q,async snap=>{
       const s=await getDoc(doc(db,"contacts",r.driverId));
       if(s.exists()) driver=s.data().name;
     }
+
     if(r.helperId){
       const s=await getDoc(doc(db,"contacts",r.helperId));
       if(s.exists()) helper=s.data().name;
     }
+
     if(r.lorryId){
       const s=await getDoc(doc(db,"lorries",r.lorryId));
       if(s.exists()) lorry=s.data().number;
     }
 
-    allRecords.push({id:d.id,so:r.so,driver,helper,lorry,start:r.start,end:r.end||"-",days:r.days});
+    allRecords.push({
+      id:d.id,
+      so:r.so,
+      driver,
+      helper,
+      lorry,
+      start:r.start,
+      end:r.end||"-",
+      days:r.days
+    });
   }
+
   render(allRecords);
 });
 
@@ -137,6 +187,8 @@ function render(data){
   });
 }
 
+/* SEARCH */
+
 searchInput.addEventListener("input",()=>{
   const term=searchInput.value.toLowerCase();
   render(allRecords.filter(r=>
@@ -147,21 +199,21 @@ searchInput.addEventListener("input",()=>{
   ));
 });
 
-window.deleteRec=id=>deleteDoc(doc(db,"records",id));
+/* ADD RECORD MODAL */
 
-/* ADD RECORD */
-document.getElementById("openFormBtn").onclick=()=>{
-  recordForm.reset();
+openFormBtn.addEventListener("click",()=>{
   recordModal.style.display="flex";
-};
+});
 
-document.getElementById("cancelRecordBtn").onclick=()=>{
+cancelRecordBtn.addEventListener("click",()=>{
   recordModal.style.display="none";
-};
+});
 
-recordForm.onsubmit=async(e)=>{
+recordForm.addEventListener("submit",async e=>{
   e.preventDefault();
+
   const soNum=Number(soNumber.value);
+
   await addDoc(recordsCol,{
     so:"SO-"+soNum,
     soNum:soNum,
@@ -174,5 +226,9 @@ recordForm.onsubmit=async(e)=>{
       Math.ceil((new Date(endDate.value)-new Date(startDate.value))/86400000)+1
       :"In Progress"
   });
+
   recordModal.style.display="none";
-};
+  recordForm.reset();
+});
+
+window.deleteRec=id=>deleteDoc(doc(db,"records",id));
