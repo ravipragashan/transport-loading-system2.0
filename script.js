@@ -117,12 +117,12 @@ onSnapshot(recordsCol, async snap=>{
 
     if(r.driverId){
       const s=await getDoc(doc(db,"contacts",r.driverId));
-      if(s.exists()) driver=s.data().name;  // name only
+      if(s.exists()) driver=s.data().name+" - "+s.data().phone;
     }
 
     if(r.helperId){
       const s=await getDoc(doc(db,"contacts",r.helperId));
-      if(s.exists()) helper=s.data().name;  // name only
+      if(s.exists()) helper=s.data().name+" - "+s.data().phone;
     }
 
     if(r.lorryId){
