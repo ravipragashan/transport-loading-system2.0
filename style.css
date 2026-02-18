@@ -1,5 +1,7 @@
 body { font-family: Arial; margin:0; padding:25px; background:#f4f6f9; }
 
+header { margin-bottom:20px; }
+
 .tabs { display:flex; gap:10px; margin-bottom:20px; }
 
 .tab-btn {
@@ -47,6 +49,14 @@ table { width:100%; border-collapse:collapse; min-width:800px; }
 th { background:#007a2f; color:white; padding:12px; text-align:left; }
 td { padding:12px; border-bottom:1px solid #eee; }
 
+.pagination {
+  margin-top:15px;
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  align-items:center;
+}
+
 .modal {
   display:none;
   position:fixed;
@@ -64,6 +74,7 @@ td { padding:12px; border-bottom:1px solid #eee; }
 .modal-buttons { display:flex; justify-content:flex-end; gap:10px; }
 
 @media(max-width:768px){
+  body{padding:15px;}
   .tabs{flex-direction:column;}
   .form-row{flex-direction:column;}
   .modal-box{width:95%;}
