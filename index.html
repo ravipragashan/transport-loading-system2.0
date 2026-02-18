@@ -17,7 +17,7 @@
   <button class="tab-btn" onclick="openTab('lorriesTab',this)">Lorries</button>
 </div>
 
-<!-- RECORDS -->
+<!-- ================= RECORDS ================= -->
 <div id="recordsTab" class="tab-content active">
 
   <div class="top-bar">
@@ -43,9 +43,15 @@
     </table>
   </div>
 
+  <div class="pagination">
+    <button id="prevPage">Previous</button>
+    <span id="pageInfo"></span>
+    <button id="nextPage">Next</button>
+  </div>
+
 </div>
 
-<!-- CONTACTS -->
+<!-- ================= CONTACTS ================= -->
 <div id="contactsTab" class="tab-content">
 
   <div class="form-row">
@@ -74,7 +80,7 @@
 
 </div>
 
-<!-- LORRIES -->
+<!-- ================= LORRIES ================= -->
 <div id="lorriesTab" class="tab-content">
 
   <div class="form-row">
@@ -96,7 +102,7 @@
 
 </div>
 
-<!-- RECORD MODAL -->
+<!-- ================= RECORD MODAL ================= -->
 <div class="modal" id="recordModal">
   <div class="modal-box">
     <h3>Create / Edit Record</h3>
@@ -127,6 +133,8 @@
   </div>
 </div>
 
+<script type="module" src="firebase.js"></script>
 <script type="module" src="script.js"></script>
+
 </body>
 </html>
