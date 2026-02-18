@@ -47,14 +47,6 @@ table { width:100%; border-collapse:collapse; min-width:800px; }
 th { background:#007a2f; color:white; padding:12px; text-align:left; }
 td { padding:12px; border-bottom:1px solid #eee; }
 
-.pagination {
-  margin-top:15px;
-  display:flex;
-  justify-content:center;
-  gap:15px;
-  align-items:center;
-}
-
 .modal {
   display:none;
   position:fixed;
