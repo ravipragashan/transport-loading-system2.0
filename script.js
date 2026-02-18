@@ -14,8 +14,8 @@ const lorriesCol = collection(db,"lorries");
 const recordTable = document.getElementById("recordTable");
 const contactTable = document.getElementById("contactTable");
 const lorryTable = document.getElementById("lorryTable");
-
 const searchInput = document.getElementById("searchInput");
+
 const openFormBtn = document.getElementById("openFormBtn");
 const recordModal = document.getElementById("recordModal");
 const cancelRecordBtn = document.getElementById("cancelRecordBtn");
@@ -29,9 +29,13 @@ const driverSelect = document.getElementById("driverSelect");
 const helperSelect = document.getElementById("helperSelect");
 const lorrySelect = document.getElementById("lorrySelect");
 
-const prevPageBtn = document.getElementById("prevPage");
-const nextPageBtn = document.getElementById("nextPage");
-const pageInfo = document.getElementById("pageInfo");
+const contactType = document.getElementById("contactType");
+const contactName = document.getElementById("contactName");
+const contactPhone = document.getElementById("contactPhone");
+const saveContactBtn = document.getElementById("saveContactBtn");
+
+const lorryNumber = document.getElementById("lorryNumber");
+const saveLorryBtn = document.getElementById("saveLorryBtn");
 
 /* TAB */
 window.openTab=(tabId,btn)=>{
@@ -46,36 +50,81 @@ onSnapshot(contactsCol,snap=>{
   contactTable.innerHTML="";
   driverSelect.innerHTML="";
   helperSelect.innerHTML="";
+
   snap.forEach(d=>{
     const c=d.data();
+
     if(c.type==="driver")
       driverSelect.innerHTML+=`<option value="${d.id}">${c.name}</option>`;
+
     if(c.type==="helper")
       helperSelect.innerHTML+=`<option value="${d.id}">${c.name}</option>`;
+
+    contactTable.innerHTML+=`
+      <tr>
+        <td>${c.name}</td>
+        <td>${c.phone}</td>
+        <td>${c.type}</td>
+        <td><button onclick="deleteContact('${d.id}')">❌</button></td>
+      </tr>`;
   });
 });
 
+saveContactBtn.onclick=async()=>{
+  await addDoc(contactsCol,{
+    type:contactType.value,
+    name:contactName.value,
+    phone:contactPhone.value
+  });
+};
+
+window.deleteContact=id=>deleteDoc(doc(db,"contacts",id));
+
+/* LORRIES */
+onSnapshot(lorriesCol,snap=>{
+  lorryTable.innerHTML="";
+  lorrySelect.innerHTML="";
+
+  snap.forEach(d=>{
+    const l=d.data();
+    lorrySelect.innerHTML+=`<option value="${d.id}">${l.number}</option>`;
+    lorryTable.innerHTML+=`
+      <tr>
+        <td>${l.number}</td>
+        <td><button onclick="deleteLorry('${d.id}')">❌</button></td>
+      </tr>`;
+  });
+});
+
+saveLorryBtn.onclick=async()=>{
+  await addDoc(lorriesCol,{number:lorryNumber.value});
+};
+
+window.deleteLorry=id=>deleteDoc(doc(db,"lorries",id));
+
 /* RECORDS */
 let allRecords=[];
-let currentPage=1;
-const rowsPerPage=10;
 let editRecordId=null;
 
 onSnapshot(recordsCol, async snap=>{
   allRecords=[];
+
   for(const d of snap.docs){
+
     const r=d.data();
 
     let driver="-",helper="-",lorry="-";
 
     if(r.driverId){
       const s=await getDoc(doc(db,"contacts",r.driverId));
-      if(s.exists()) driver=s.data().name;
+      if(s.exists()) driver=s.data().name+" - "+s.data().phone;
     }
+
     if(r.helperId){
       const s=await getDoc(doc(db,"contacts",r.helperId));
-      if(s.exists()) helper=s.data().name;
+      if(s.exists()) helper=s.data().name+" - "+s.data().phone;
     }
+
     if(r.lorryId){
       const s=await getDoc(doc(db,"lorries",r.lorryId));
       if(s.exists()) lorry=s.data().number;
@@ -84,7 +133,7 @@ onSnapshot(recordsCol, async snap=>{
     allRecords.push({
       id:d.id,
       so:r.so,
-      soNumber:Number(r.so.replace("SO-","")),
+      soNumber: Number(r.so.replace("SO-","")),
       driver,helper,lorry,
       start:r.start,
       end:r.end||"-",
@@ -92,18 +141,15 @@ onSnapshot(recordsCol, async snap=>{
     });
   }
 
+  // SORT BIG SO FIRST
   allRecords.sort((a,b)=>b.soNumber-a.soNumber);
-  currentPage=1;
+
   render(allRecords);
 });
 
 function render(data){
   recordTable.innerHTML="";
-  const totalPages=Math.ceil(data.length/rowsPerPage)||1;
-  const start=(currentPage-1)*rowsPerPage;
-  const pageData=data.slice(start,start+rowsPerPage);
-
-  pageData.forEach(r=>{
+  data.forEach(r=>{
     recordTable.innerHTML+=`
       <tr>
         <td>${r.so}</td>
@@ -120,28 +166,85 @@ function render(data){
         </td>
       </tr>`;
   });
-
-  pageInfo.innerText=`Page ${currentPage} of ${totalPages}`;
-  prevPageBtn.disabled=currentPage===1;
-  nextPageBtn.disabled=currentPage===totalPages;
 }
-
-/* PAGINATION */
-prevPageBtn.onclick=()=>{ if(currentPage>1){currentPage--;render(allRecords);} };
-nextPageBtn.onclick=()=>{ 
-  const totalPages=Math.ceil(allRecords.length/rowsPerPage);
-  if(currentPage<totalPages){currentPage++;render(allRecords);}
-};
 
 /* SEARCH */
 searchInput.addEventListener("input",()=>{
   const term=searchInput.value.toLowerCase();
-  const filtered=allRecords.filter(r=>
+  render(allRecords.filter(r=>
     r.so.toLowerCase().includes(term)||
     r.driver.toLowerCase().includes(term)||
     r.helper.toLowerCase().includes(term)||
     r.lorry.toLowerCase().includes(term)
-  );
-  currentPage=1;
-  render(filtered);
+  ));
 });
+
+/* ADD / EDIT RECORD */
+openFormBtn.onclick=()=>{
+  editRecordId=null;
+  recordForm.reset();
+  recordModal.style.display="flex";
+};
+
+cancelRecordBtn.onclick=()=>recordModal.style.display="none";
+
+window.editRec=async(id)=>{
+  const snap=await getDoc(doc(db,"records",id));
+  const r=snap.data();
+  editRecordId=id;
+  soNumber.value=r.so.replace("SO-","");
+  startDate.value=r.start;
+  endDate.value=r.end||"";
+  driverSelect.value=r.driverId;
+  helperSelect.value=r.helperId;
+  lorrySelect.value=r.lorryId;
+  recordModal.style.display="flex";
+};
+
+recordForm.onsubmit=async e=>{
+  e.preventDefault();
+
+  const data={
+    so:"SO-"+soNumber.value,
+    driverId:driverSelect.value,
+    helperId:helperSelect.value,
+    lorryId:lorrySelect.value,
+    start:startDate.value,
+    end:endDate.value||"",
+    days:endDate.value?
+      Math.ceil((new Date(endDate.value)-new Date(startDate.value))/86400000)+1
+      :"In Progress"
+  };
+
+  if(editRecordId){
+    await updateDoc(doc(db,"records",editRecordId),data);
+  }else{
+    await addDoc(recordsCol,data);
+  }
+
+  recordModal.style.display="none";
+};
+
+window.deleteRec=id=>deleteDoc(doc(db,"records",id));
+
+/* WHATSAPP */
+window.shareWA=async(id)=>{
+  const snap=await getDoc(doc(db,"records",id));
+  const r=snap.data();
+
+  const driver=(await getDoc(doc(db,"contacts",r.driverId))).data();
+  const helper=(await getDoc(doc(db,"contacts",r.helperId))).data();
+  const lorry=(await getDoc(doc(db,"lorries",r.lorryId))).data();
+
+  const dateObj=new Date(r.start);
+  const date=`${dateObj.getDate()}-${dateObj.getMonth()+1}-${dateObj.getFullYear()}`;
+
+  const msg=
+`${date} Loaded
+Order Number - ${r.so}
+Lorry Number: ${lorry.number}
+Driver :- ${driver.name} - ${driver.phone}
+Poter :- ${helper.name} - ${helper.phone}`;
+
+  window.open("https://wa.me/?text="+encodeURIComponent(msg));
+};
