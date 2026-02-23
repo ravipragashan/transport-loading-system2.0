@@ -1,29 +1,11 @@
-
 body {
   font-family: Arial;
   padding: 25px;
   background: #f4f6f9;
 }
 
-.login-box {
-  max-width: 300px;
-  margin: 100px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
 button {
-  padding: 8px 12px;
+  padding: 6px 12px;
   background: #003366;
   color: white;
   border: none;
@@ -34,8 +16,8 @@ button {
 .table-wrapper {
   background: white;
   border-radius: 8px;
-  overflow-x: auto;
   box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  overflow-x: auto;
 }
 
 table {
@@ -46,12 +28,12 @@ table {
 th {
   background: #003366;
   color: white;
-  padding: 12px;
+  padding: 10px;
   text-align: left;
 }
 
 td {
-  padding: 12px;
+  padding: 10px;
   border-bottom: 1px solid #eee;
 }
 
@@ -66,9 +48,17 @@ td {
 
 .modal-box {
   background: white;
-  width: 600px;
+  width: 500px;
   padding: 20px;
   border-radius: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 .expense-row {
@@ -83,6 +73,11 @@ td {
 
 .modal-actions {
   display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+@media(max-width:768px){
+  .modal-box { width: 95%; }
 }
