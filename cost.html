@@ -1,52 +1,44 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SO Cost Manager</title>
+  <title>SO Allocation Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="cost.css">
+  <link rel="stylesheet" href="so-allocation.css">
 </head>
 <body>
 
-<div id="loginScreen" class="login-box">
-  <h2>SO Cost Manager Access</h2>
-  <input type="password" id="pinInput" placeholder="Enter PIN">
-  <button id="loginBtn">Login</button>
-  <p id="loginError"></p>
+<h2>SO Allocation Pro</h2>
+
+<div class="top-bar">
+  <button id="newSOBtn">+ New SO</button>
 </div>
 
-<div id="app" style="display:none;">
-
-  <h2>SO Cost Manager</h2>
-
-  <div class="top-bar">
-    <button id="newCostBtn">+ New SO Cost</button>
-    <button id="exportExcelBtn">Export Excel</button>
-  </div>
-
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>SO</th>
-          <th>Total Cost</th>
-          <th>PPC Cost</th>
-          <th>EC Cost</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="costTable"></tbody>
-    </table>
-  </div>
-
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>SO</th>
+        <th>Amount</th>
+        <th>CBM PPC</th>
+        <th>CBM EC</th>
+        <th>Advance Total</th>
+        <th>Final Total</th>
+        <th>PPC Allocated</th>
+        <th>EC Allocated</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="soTable"></tbody>
+  </table>
 </div>
 
-<div class="modal" id="costModal">
+<!-- MAIN MODAL -->
+<div class="modal" id="mainModal">
   <div class="modal-box">
 
-    <h3>SO Cost Details</h3>
+    <h3>SO Details</h3>
 
-    <label>SO</label>
+    <label>SO Number</label>
     <input id="soInput">
 
     <label>Amount</label>
@@ -58,13 +50,23 @@
     <label>CBM EC</label>
     <input id="cbmECInput" type="number">
 
-    <h4>Advance Costs</h4>
-    <div id="advanceContainer"></div>
-    <button id="addAdvance">+ Add Advance</button>
+    <div class="modal-actions">
+      <button id="saveMainBtn">Save</button>
+      <button id="closeMainBtn">Close</button>
+    </div>
 
-    <h4>Final Costs</h4>
-    <div id="finalContainer"></div>
-    <button id="addFinal">+ Add Final</button>
+  </div>
+</div>
+
+<!-- COST MODAL -->
+<div class="modal" id="costModal">
+  <div class="modal-box">
+
+    <h3 id="costTitle"></h3>
+
+    <div id="expenseContainer"></div>
+
+    <button id="addExpenseBtn">+ Add Expense</button>
 
     <div class="modal-actions">
       <button id="saveCostBtn">Save</button>
@@ -74,8 +76,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script type="module" src="cost.js"></script>
-
+<script type="module" src="so-allocation.js"></script>
 </body>
 </html>
