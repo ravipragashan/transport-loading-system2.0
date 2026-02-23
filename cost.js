@@ -1,73 +1,139 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore, collection, addDoc,
-  getDocs, doc, getDoc, updateDoc, onSnapshot
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+/* 🔥 PUT YOUR REAL CONFIG HERE */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID"
+  apiKey: "AIzaSyAcpkRglFpdgXPUyfOKDkP9tWTYY0d2tCc",
+  authDomain: "transport-loading-system.firebaseapp.com",
+  projectId: "transport-loading-system"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const costsCol = collection(db, "costs");
 
-const SYSTEM_PIN = "1234";
+const soCol = collection(db, "soAllocation");
 
-const loginBtn = document.getElementById("loginBtn");
-const pinInput = document.getElementById("pinInput");
-const loginScreen = document.getElementById("loginScreen");
-const appDiv = document.getElementById("app");
+/* DOM */
+const soTable = document.getElementById("soTable");
+const mainModal = document.getElementById("mainModal");
+const costModal = document.getElementById("costModal");
+const expenseContainer = document.getElementById("expenseContainer");
 
-loginBtn.onclick = () => {
-  if(pinInput.value === SYSTEM_PIN){
-    loginScreen.style.display="none";
-    appDiv.style.display="block";
-  } else {
-    document.getElementById("loginError").innerText="Wrong PIN";
-  }
-};
+let editId = null;
+let currentCostType = "";
 
-const costTable = document.getElementById("costTable");
+/* LOAD TABLE */
+onSnapshot(soCol, snap => {
+  soTable.innerHTML = "";
 
-onSnapshot(costsCol, snap => {
-  costTable.innerHTML = "";
   snap.forEach(d => {
-    const c = d.data();
-    costTable.innerHTML += `
+    const s = d.data();
+
+    const totalCost = (s.advanceTotal || 0) + (s.finalTotal || 0);
+    const totalCBM = (s.cbmPPC || 0) + (s.cbmEC || 0);
+
+    const ppcAllocated = totalCBM > 0 ? (totalCost / totalCBM) * s.cbmPPC : 0;
+    const ecAllocated = totalCBM > 0 ? (totalCost / totalCBM) * s.cbmEC : 0;
+
+    soTable.innerHTML += `
       <tr>
-        <td>${c.so}</td>
-        <td>${c.totalCost}</td>
-        <td>${c.ppcCost}</td>
-        <td>${c.ecCost}</td>
-        <td><button onclick="editCost('${d.id}')">Edit</button></td>
-      </tr>`;
+        <td>${s.so}</td>
+        <td>${s.amount}</td>
+        <td>${s.cbmPPC}</td>
+        <td>${s.cbmEC}</td>
+        <td><button onclick="openCost('${d.id}','advance')">${s.advanceTotal || 0}</button></td>
+        <td><button onclick="openCost('${d.id}','final')">${s.finalTotal || 0}</button></td>
+        <td>${ppcAllocated.toFixed(2)}</td>
+        <td>${ecAllocated.toFixed(2)}</td>
+        <td><button onclick="editSO('${d.id}')">Edit</button></td>
+      </tr>
+    `;
   });
 });
 
-document.getElementById("exportExcelBtn").onclick = async () => {
+/* NEW SO */
+document.getElementById("newSOBtn").onclick = () => {
+  editId = null;
+  document.getElementById("soInput").value = "";
+  mainModal.style.display = "flex";
+};
 
-  const snapshot = await getDocs(costsCol);
-  const excelData = [];
+document.getElementById("closeMainBtn").onclick = () => {
+  mainModal.style.display = "none";
+};
 
-  snapshot.forEach(doc => {
-    const c = doc.data();
-    excelData.push({
-      SO: c.so,
-      Amount: c.amount,
-      Advance: c.advanceTotal,
-      Final: c.finalTotal,
-      Total: c.totalCost,
-      PPC: c.ppcCost,
-      EC: c.ecCost
-    });
+/* SAVE MAIN */
+document.getElementById("saveMainBtn").onclick = async () => {
+
+  const data = {
+    so: document.getElementById("soInput").value,
+    amount: Number(document.getElementById("amountInput").value),
+    cbmPPC: Number(document.getElementById("cbmPPCInput").value),
+    cbmEC: Number(document.getElementById("cbmECInput").value),
+    advanceTotal: 0,
+    finalTotal: 0
+  };
+
+  if (editId) {
+    await updateDoc(doc(db, "soAllocation", editId), data);
+  } else {
+    await addDoc(soCol, data);
+  }
+
+  mainModal.style.display = "none";
+};
+
+/* OPEN COST MODAL */
+window.openCost = async (id, type) => {
+
+  currentCostType = type;
+  editId = id;
+  expenseContainer.innerHTML = "";
+
+  document.getElementById("costTitle").innerText =
+    type === "advance" ? "Advance Costs" : "Final Costs";
+
+  costModal.style.display = "flex";
+};
+
+document.getElementById("closeCostBtn").onclick = () => {
+  costModal.style.display = "none";
+};
+
+/* ADD EXPENSE */
+document.getElementById("addExpenseBtn").onclick = () => {
+  const row = document.createElement("div");
+  row.className = "expense-row";
+  row.innerHTML = `
+    <input placeholder="Expense">
+    <input type="number" placeholder="Amount">
+  `;
+  expenseContainer.appendChild(row);
+};
+
+/* SAVE COST */
+document.getElementById("saveCostBtn").onclick = async () => {
+
+  let total = 0;
+
+  expenseContainer.querySelectorAll(".expense-row").forEach(r => {
+    total += Number(r.children[1].value || 0);
   });
 
-  const worksheet = XLSX.utils.json_to_sheet(excelData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "SO Costs");
-  XLSX.writeFile(workbook, "SO_Cost_Report.xlsx");
+  const updateData = currentCostType === "advance"
+    ? { advanceTotal: total }
+    : { finalTotal: total };
+
+  await updateDoc(doc(db, "soAllocation", editId), updateData);
+
+  costModal.style.display = "none";
 };
