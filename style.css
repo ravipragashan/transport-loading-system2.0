@@ -20,7 +20,25 @@ body { font-family: Arial; margin:0; padding:25px; background:#f4f6f9; }
   margin-bottom:15px;
   flex-wrap:wrap;
 }
+.main-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
 
+.cost-link {
+  text-decoration:none;
+}
+
+.cost-btn {
+  background:#003366;
+  color:white;
+  padding:8px 14px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
 input, select {
   padding:8px;
   border:1px solid #ccc;
